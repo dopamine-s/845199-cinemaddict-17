@@ -1,7 +1,7 @@
 import { getRandomInteger, getRandomArrayElement } from '../utils.js';
 
 const generateMockCommentText = () => {
-  const randomCommentTexts = [
+  const RANDOM_COMMENT_TEXTS = [
     'A film that changed my life, a true masterpiece, post-credit scene was just amazing omg.',
     'Полная дрянь. Не стоит вашего внимания',
     'Отличный фильм, жаль, что сейчас таких не снимают.',
@@ -10,11 +10,11 @@ const generateMockCommentText = () => {
     'Не думаю, что захочу это пересматривать.',
   ];
 
-  return getRandomArrayElement(randomCommentTexts);
+  return getRandomArrayElement(RANDOM_COMMENT_TEXTS);
 };
 
 const generateMockCommentAuthor = () => {
-  const randomCommentAuthors = [
+  const RANDOM_COMMENT_AUTHORS = [
     'Ilya O\'Reilly',
     'Vasya3000',
     'Василий Алибабаевич',
@@ -26,7 +26,7 @@ const generateMockCommentAuthor = () => {
     'Павел'
   ];
 
-  return getRandomArrayElement(randomCommentAuthors);
+  return getRandomArrayElement(RANDOM_COMMENT_AUTHORS);
 };
 
 const generateMockMovieComment = (id) => ({
@@ -53,7 +53,7 @@ export const generateMockComments = (commentsAmount) => {
 
 const generateMockMovieDescription = () => {
   const MAX_DESCRIPTION_SENTENCES_NUMBER = 5;
-  const descriptions = [
+  const DESCRIPTIONS = [
     'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
     'Cras aliquet varius magna, non porta ligula feugiat eget.',
     'Aliquam id orci ut lectus varius viverra.',
@@ -68,11 +68,11 @@ const generateMockMovieDescription = () => {
 
   const descriptionsList = [];
   const createSingleDescriptionSentence = () => {
-    for (let i = 0; i <= descriptions.length - 1; i++) {
-      let randomDescription = getRandomArrayElement(descriptions);
+    for (let i = 0; i <= DESCRIPTIONS.length - 1; i++) {
+      let randomDescription = getRandomArrayElement(DESCRIPTIONS);
 
       while (descriptionsList.includes(randomDescription)) {
-        randomDescription = getRandomArrayElement(descriptions);
+        randomDescription = getRandomArrayElement(DESCRIPTIONS);
       }
 
       descriptionsList.push(randomDescription);
@@ -81,8 +81,7 @@ const generateMockMovieDescription = () => {
   };
 
   const mockMovieDescription = String(Array.from({ length: getRandomInteger(1, MAX_DESCRIPTION_SENTENCES_NUMBER) }, createSingleDescriptionSentence));
-  const mockMovieDescriptionString = mockMovieDescription.replace( /.,/g, '.');
-  return mockMovieDescriptionString.trim();
+  return mockMovieDescription.trim().split('.,').join('.');
 };
 
 const generateMockMoviePoster = () => {

@@ -5,7 +5,6 @@ const createMovieCardTemplate = (movie) => {
 
   const MAX_DESCRIPTION_LENGTH = 140;
   const { comments, filmInfo: { title, totalRating, description, poster, release: { date }, runtime, genre } } = movie;
-  //console.log ()
   const getHumanizeYearDate = () => {
     if (date && date !== null) {
       return humanizeYearDate(date);
@@ -20,6 +19,10 @@ const createMovieCardTemplate = (movie) => {
     if (description && description.length > MAX_DESCRIPTION_LENGTH) {
       return `${description.substring(0, MAX_DESCRIPTION_LENGTH - 1)}...`;
     }
+    else if (description === null) {
+      return '';
+    }
+    return description;
   };
 
   const takeMainGenre = () => {
