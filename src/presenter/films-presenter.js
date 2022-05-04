@@ -5,6 +5,7 @@ import MovieCardView from '../view/movie-card-view.js';
 import ShowMoreButtonView from '../view/show-more-button-view.js';
 import FilmsTopRatedView from '../view/films-top-rated-view.js';
 import FilmsMostCommentedView from '../view/films-most-commented-view.js';
+import {getCommentsByIds} from '../utils.js';
 import { render } from '../render.js';
 
 export default class FilmsPresenter {
@@ -23,13 +24,11 @@ export default class FilmsPresenter {
     render(this.filmsContainerComponent, this.filmsListComponent.getElement());
 
     for (let i = 0; i < this.movies.length; i++) {
-      //const movieComments = getCommentsByIds(this.comments, this.movies[i].comments)
-      //console.log(this.movies[i].comments);
-      //импортировать созданную в утилитах функцию, которая будет собирать массив с комментариями по ID комментариев из данного фильма
-      //функция примет массив id из фильма и все комментарии и вернет массив с комментариями
+      const movieComments = getCommentsByIds(this.comments, this.movies[i].comments);
+
       render(new MovieCardView(
         this.movies[i],
-        //movieComments здесь должна быть переменная с отобранными комментариями для фильма
+        movieComments[i]
       ), this.filmsContainerComponent.getElement());
     }
 

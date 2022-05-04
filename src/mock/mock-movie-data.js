@@ -1,4 +1,4 @@
-import { getRandomInteger, getRandomArrayElement } from '../utils.js';
+import { getRandomInteger, getRandomArrayElement, generateDate, generateId } from '../utils.js';
 
 const generateMockCommentText = () => {
   const RANDOM_COMMENT_TEXTS = [
@@ -29,17 +29,22 @@ const generateMockCommentAuthor = () => {
   return getRandomArrayElement(RANDOM_COMMENT_AUTHORS);
 };
 
+const generateMockCommentEmotion = () => {
+  const EMOJIS = [
+    'smile',
+    'sleeping',
+    'puke',
+    'angry',
+  ];
+  return getRandomArrayElement(EMOJIS);
+};
+
 const generateMockMovieComment = (id) => ({
   id,
   author: generateMockCommentAuthor(),
   comment: generateMockCommentText(),
-  commentDate: '2019-05-11T16:12:32.554Z',
-  emotion: {
-    smile: true,
-    sleeping: false,
-    puke: false,
-    angry: false,
-  },
+  commentDate: generateDate(-1000, 0),
+  emotion: generateMockCommentEmotion(),
 });
 
 export const generateMockComments = (commentsAmount) => {
@@ -113,30 +118,30 @@ const generateMockMovieTitle = () => {
 };
 
 export const generateMockMovieData = () => ({
-  id: 1,
-  comments: [1,2,3],
+  id: generateId(),
+  comments: [1,2,3,4],
 
   filmInfo: {
     title: generateMockMovieTitle (),
     alternativeTitle: '',
-    totalRating: 8.9,
+    totalRating: `${getRandomInteger(5, 9)}.${getRandomInteger(0,9)}`,
     poster: generateMockMoviePoster(),
-    ageRating: 0,
+    ageRating: getRandomInteger(0, 18),
     director: 'Anthony Mann',
     writers: ['Anne Wigton, Heinz Herald, Richard Weil'],
     actors: ['Erich von Stroheim, Mary Beth Hughes, Dan Duryea'],
     release: {
-      date: '2019-05-11T00:00:00.000Z',
+      date: generateDate(-40000, 0),
       releaseCountry: 'USA'
     },
-    runtime: 177,
+    runtime: getRandomInteger(30, 250),
     genre: ['Comedy', 'Drama'],
     description: generateMockMovieDescription(),
   },
   userDetails: {
-    watchlist: false,
-    alreadyWatched: false,
-    watchingDate: '2019-04-12T16:12:32.554Z',
-    favorite: false
+    watchlist: Boolean(getRandomInteger(0, 2)),
+    alreadyWatched: Boolean(getRandomInteger(0, 2)),
+    watchingDate: generateDate(-1000, 0),
+    favorite: Boolean(getRandomInteger(0, 2)),
   }
 });

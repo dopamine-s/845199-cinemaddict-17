@@ -4,7 +4,27 @@ import { humanizeYearDate, getTimeFromMins } from '../utils.js';
 const createMovieCardTemplate = (movie) => {
 
   const MAX_DESCRIPTION_LENGTH = 140;
-  const { comments, filmInfo: { title, totalRating, description, poster, release: { date }, runtime, genre } } = movie;
+  const {
+    comments,
+    filmInfo: {
+      title,
+      totalRating,
+      description,
+      poster,
+      release: { date },
+      runtime,
+      genre,
+      // userDetails: {
+      //   watchlist,
+      //   alreadyWatched,
+      //   favorite
+      // }
+    }
+  } = movie;
+
+  // const isWatchlistActive = watchlist ? 'film-card__controls-item--active' : '';
+  // const isAlreadyWatchedActive = alreadyWatched ? 'film-card__controls-item--active' : '';
+  // const isFavoriteActive = favorite ? 'film-card__controls-item--active' : '';
   const getHumanizeYearDate = () => {
     if (date && date !== null) {
       return humanizeYearDate(date);
