@@ -1,4 +1,5 @@
 import { getRandomInteger, getRandomArrayElement, generateDate, generateId } from '../utils.js';
+import { MAX_COMMENTS } from '../model/mock-movies-model.js';
 
 const generateMockCommentText = () => {
   const RANDOM_COMMENT_TEXTS = [
@@ -119,8 +120,7 @@ const generateMockMovieTitle = () => {
 
 export const generateMockMovieData = () => ({
   id: generateId(),
-  comments: [1,2,3,4],
-
+  comments: Array.from({ length: getRandomInteger(0, MAX_COMMENTS) }, () => getRandomInteger(0, 9)),
   filmInfo: {
     title: generateMockMovieTitle (),
     alternativeTitle: '',
@@ -145,3 +145,4 @@ export const generateMockMovieData = () => ({
     favorite: Boolean(getRandomInteger(0, 2)),
   }
 });
+

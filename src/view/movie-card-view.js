@@ -21,6 +21,7 @@ const createMovieCardTemplate = (movie) => {
       // }
     }
   } = movie;
+  // console.log(comments);
 
   // const isWatchlistActive = watchlist ? 'film-card__controls-item--active' : '';
   // const isAlreadyWatchedActive = alreadyWatched ? 'film-card__controls-item--active' : '';

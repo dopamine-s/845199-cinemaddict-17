@@ -45,10 +45,12 @@ const getTimeFromMins = (mins) => {
 
 const getCommentsByIds = (allComments, singleMovieComments) => {
   const resultComments = [];
-
+  console.log(singleMovieComments);
+  console.log(allComments);
   for (const singleMovieComment of singleMovieComments) {
-    resultComments.push(allComments.find((comment) => comment.id === singleMovieComment.id));
+    resultComments.push(allComments.find((comment) => comment.id === singleMovieComment));
   }
+  console.log(resultComments);
   return resultComments;
 };
 
