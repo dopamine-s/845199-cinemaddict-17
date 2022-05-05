@@ -91,7 +91,7 @@ const generateMockMovieDescription = () => {
 };
 
 const generateMockMoviePoster = () => {
-  const posters = [
+  const POSTERS = [
     './images/posters/made-for-each-other.png',
     './images/posters/popeye-meets-sinbad.png',
     './images/posters/sagebrush-trail.jpg',
@@ -101,11 +101,11 @@ const generateMockMoviePoster = () => {
     './images/posters/the-man-with-the-golden-arm.jpg',
   ];
 
-  return getRandomArrayElement(posters);
+  return getRandomArrayElement(POSTERS);
 };
 
 const generateMockMovieTitle = () => {
-  const titles = [
+  const TITLES = [
     'Made For Each Other',
     'Popeye Meets Sinbad',
     'Sagebrush Trail',
@@ -115,7 +115,42 @@ const generateMockMovieTitle = () => {
     'The Man With The Golden Arm',
   ];
 
-  return getRandomArrayElement(titles);
+  return getRandomArrayElement(TITLES);
+};
+
+const generateMockMovieGenre = () => {
+  const GENRES = [
+    'Drama',
+    'Comedy',
+    'Thriller',
+    'Romance',
+    'Mystery',
+    'Horror',
+    'Action',
+    'Fantasy'
+  ];
+
+  return Array.from({ length: getRandomInteger(1, 3) }, () => getRandomArrayElement(GENRES));
+};
+
+const generateMockMovieWriters = () => {
+  const WRITERS = [
+    'Anne Wigton',
+    'Heinz Herald',
+    'Richard Weil'
+  ];
+
+  return Array.from({ length: getRandomInteger(1, 3) }, () => getRandomArrayElement(WRITERS));
+};
+
+const generateMockMovieActors = () => {
+  const ACTORS = [
+    'Erich von Stroheim',
+    'Mary Beth Hughes',
+    'Dan Duryea'
+  ];
+
+  return Array.from({ length: getRandomInteger(1, 3) }, () => getRandomArrayElement(ACTORS));
 };
 
 export const generateMockMovieData = () => ({
@@ -128,14 +163,14 @@ export const generateMockMovieData = () => ({
     poster: generateMockMoviePoster(),
     ageRating: getRandomInteger(0, 18),
     director: 'Anthony Mann',
-    writers: ['Anne Wigton, Heinz Herald, Richard Weil'],
-    actors: ['Erich von Stroheim, Mary Beth Hughes, Dan Duryea'],
+    writers: generateMockMovieWriters(),
+    actors: generateMockMovieActors(),
     release: {
       date: generateDate(-40000, 0),
       releaseCountry: 'USA'
     },
     runtime: getRandomInteger(30, 250),
-    genre: ['Comedy', 'Drama'],
+    genre: generateMockMovieGenre(),
     description: generateMockMovieDescription(),
   },
   userDetails: {

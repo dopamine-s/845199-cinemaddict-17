@@ -57,13 +57,21 @@ const createMovieDetailsTemplate = (movie, movieComments) => {
       },
       runtime,
       genre,
-      description
+      description,
+    },
+    userDetails: {
+      watchlist,
+      alreadyWatched,
+      favorite,
     }
   } = movie;
 
   const commentsTemplate = createCommentsTemplate(movieComments);
 
-  //movie Comments = это массив отобранных комментариев (по ID из comments);
+  const isWatchlistActive = watchlist ? 'film-details__control-button--active' : '';
+  const isAlreadyWatchedActive = alreadyWatched ? 'film-details__control-button--active' : '';
+  const isFavoriteActive = favorite ? 'film-details__control-button--active' : '';
+
   const getHumanizeDayDate = () => {
     if (date && date !== null) {
       return humanizeDayDate(date);
@@ -182,9 +190,9 @@ const createMovieDetailsTemplate = (movie, movieComments) => {
         </div>
 
         <section class="film-details__controls">
-          <button type="button" class="film-details__control-button film-details__control-button--watchlist" id="watchlist" name="watchlist">Add to watchlist</button>
-          <button type="button" class="film-details__control-button film-details__control-button--active film-details__control-button--watched" id="watched" name="watched">Already watched</button>
-          <button type="button" class="film-details__control-button film-details__control-button--favorite" id="favorite" name="favorite">Add to favorites</button>
+          <button type="button" class="film-details__control-button film-details__control-button--watchlist ${isWatchlistActive}" id="watchlist" name="watchlist">Add to watchlist</button>
+          <button type="button" class="film-details__control-button film-details__control-button--active film-details__control-button--watched ${isAlreadyWatchedActive}" id="watched" name="watched">Already watched</button>
+          <button type="button" class="film-details__control-button film-details__control-button--favorite ${isFavoriteActive}" id="favorite" name="favorite">Add to favorites</button>
         </section>
       </div>
 

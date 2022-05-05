@@ -22,7 +22,7 @@ const humanizeYearDate = (data) => dayjs(data).format('YYYY');
 const humanizeCommentDate = (data) => dayjs(data).format('YYYY/MM/DD HH:mm');
 const adaptCommentDate = (data) => {
   const dayDate = dayjs(data);
-  const daysGap = dayjs().diff(dayDate, 'days');
+  const daysGap = dayjs().diff(dayDate, 'day');
 
   if (daysGap <= 1) {
     return 'Today';
