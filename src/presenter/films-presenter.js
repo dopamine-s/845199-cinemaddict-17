@@ -28,7 +28,7 @@ export default class FilmsPresenter {
 
       render(new MovieCardView(
         this.movies[i],
-        movieComments[i]
+        movieComments
       ), this.filmsContainerComponent.getElement());
     }
 

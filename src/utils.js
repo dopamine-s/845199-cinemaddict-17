@@ -19,7 +19,23 @@ const generateDate = (minDayGap, maxDayGap) => {
 
 const humanizeDayDate = (data) => dayjs(data).format('D MMMM YYYY');
 const humanizeYearDate = (data) => dayjs(data).format('YYYY');
-const humanizeCommentDate = (data) =>dayjs(data).format('YYYY/MM/DD HH:mm');
+const humanizeCommentDate = (data) => dayjs(data).format('YYYY/MM/DD HH:mm');
+const adaptCommentDate = (data) => {
+  const dayDate = dayjs(data);
+  const daysGap = dayjs().diff(dayDate, 'days');
+
+  if (daysGap <= 1) {
+    return 'Today';
+  }
+  if (daysGap > 1 && daysGap <= 30) {
+    return `${daysGap} days ago`;
+  }
+  if (daysGap > 30) {
+    return dayjs(data).format('YYYY/MM/DD HH:MM');
+  }
+
+  return dayjs(data).format('YYYY/MM/DD HH:MM');
+};
 
 const getTimeFromMins = (mins) => {
   const hours = Math.trunc(mins / 60);
@@ -38,4 +54,4 @@ const getCommentsByIds = (allComments, singleMovieComments) => {
 
 const generateId = () => Date.now().toString().substring(10) + getRandomInteger(Date.now().toString().substring(8), Date.now().toString().substring(6));
 
-export { getRandomInteger, getRandomArrayElement, generateDate, humanizeDayDate, humanizeYearDate, humanizeCommentDate, getTimeFromMins, generateId, getCommentsByIds };
+export { getRandomInteger, getRandomArrayElement, generateDate, humanizeDayDate, humanizeYearDate, humanizeCommentDate, adaptCommentDate, getTimeFromMins, generateId, getCommentsByIds };

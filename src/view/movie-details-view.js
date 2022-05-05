@@ -1,8 +1,68 @@
 import { createElement } from '../render.js';
-import { humanizeDayDate, getTimeFromMins } from '../utils.js';
+import { humanizeDayDate, adaptCommentDate, getTimeFromMins } from '../utils.js';
 
-const createMovieDetailsTemplate = (movie, /*movieComments*/) => {
-  const { comments, filmInfo: { title, alternativeTitle, totalRating, poster, ageRating, director, writers, actors, release: { date, releaseCountry }, runtime, genre, description } } = movie;
+const createCommentTemplate = (commentItem) => {
+  const {
+    author,
+    comment,
+    date,
+    emotion,
+  } = commentItem;
+
+  const getAdaptedCommentDate = () => {
+    if (date && date !== null) {
+      return adaptCommentDate(date);
+    } else {
+      return '';
+    }
+  };
+
+  return `<li class="film-details__comment">
+  <span class="film-details__comment-emoji">
+    <img src="./images/emoji/${emotion}.png" width="55" height="55" alt="emoji-sleeping">
+  </span>
+  <div>
+    <p class="film-details__comment-text">${comment}</p>
+    <p class="film-details__comment-info">
+      <span class="film-details__comment-author">${author}</span>
+      <span class="film-details__comment-day">${getAdaptedCommentDate()}</span>
+      <button class="film-details__comment-delete">Delete</button>
+    </p>
+  </div>
+  </li>`;
+
+};
+
+const createCommentsTemplate = (movieComments) => {
+  let commentsTemplate = '';
+  commentsTemplate = movieComments.map((item) => createCommentTemplate(item));
+  return commentsTemplate.join();
+};
+
+const createMovieDetailsTemplate = (movie, movieComments) => {
+  const {
+    comments,
+    filmInfo: {
+      title,
+      alternativeTitle,
+      totalRating,
+      poster,
+      ageRating,
+      director,
+      writers,
+      actors,
+      release: {
+        date,
+        releaseCountry
+      },
+      runtime,
+      genre,
+      description
+    }
+  } = movie;
+
+  const commentsTemplate = createCommentsTemplate(movieComments);
+
   //movie Comments = это массив отобранных комментариев (по ID из comments);
   const getHumanizeDayDate = () => {
     if (date && date !== null) {
@@ -133,58 +193,7 @@ const createMovieDetailsTemplate = (movie, /*movieComments*/) => {
           <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">${comments.length}</span></h3>
 
           <ul class="film-details__comments-list">
-            <li class="film-details__comment">
-              <span class="film-details__comment-emoji">
-                <img src="./images/emoji/smile.png" width="55" height="55" alt="emoji-smile">
-              </span>
-              <div>
-                <p class="film-details__comment-text">Interesting setting and a good cast</p>
-                <p class="film-details__comment-info">
-                  <span class="film-details__comment-author">Tim Macoveev</span>
-                  <span class="film-details__comment-day">2019/12/31 23:59</span>
-                  <button class="film-details__comment-delete">Delete</button>
-                </p>
-              </div>
-            </li>
-            <li class="film-details__comment">
-              <span class="film-details__comment-emoji">
-                <img src="./images/emoji/sleeping.png" width="55" height="55" alt="emoji-sleeping">
-              </span>
-              <div>
-                <p class="film-details__comment-text">Booooooooooring</p>
-                <p class="film-details__comment-info">
-                  <span class="film-details__comment-author">John Doe</span>
-                  <span class="film-details__comment-day">2 days ago</span>
-                  <button class="film-details__comment-delete">Delete</button>
-                </p>
-              </div>
-            </li>
-            <li class="film-details__comment">
-              <span class="film-details__comment-emoji">
-                <img src="./images/emoji/puke.png" width="55" height="55" alt="emoji-puke">
-              </span>
-              <div>
-                <p class="film-details__comment-text">Very very old. Meh</p>
-                <p class="film-details__comment-info">
-                  <span class="film-details__comment-author">John Doe</span>
-                  <span class="film-details__comment-day">2 days ago</span>
-                  <button class="film-details__comment-delete">Delete</button>
-                </p>
-              </div>
-            </li>
-            <li class="film-details__comment">
-              <span class="film-details__comment-emoji">
-                <img src="./images/emoji/angry.png" width="55" height="55" alt="emoji-angry">
-              </span>
-              <div>
-                <p class="film-details__comment-text">Almost two hours? Seriously?</p>
-                <p class="film-details__comment-info">
-                  <span class="film-details__comment-author">John Doe</span>
-                  <span class="film-details__comment-day">Today</span>
-                  <button class="film-details__comment-delete">Delete</button>
-                </p>
-              </div>
-            </li>
+            ${commentsTemplate}
           </ul>
 
           <div class="film-details__new-comment">
@@ -222,11 +231,11 @@ const createMovieDetailsTemplate = (movie, /*movieComments*/) => {
   </section>`
   );
 };
-// Перед вызовом класса нужно будет отобрать комментарии по ID
+
 export default class MovieDetailsView {
   constructor(movie, movieComments) {
     this.movie = movie;
-    this.movieComments = movieComments; // Отобранные по ID комментарии
+    this.movieComments = movieComments;
   }
 
   getTemplate() {
