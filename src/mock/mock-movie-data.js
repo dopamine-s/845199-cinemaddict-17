@@ -174,10 +174,10 @@ export const generateMockMovieData = () => ({
     description: generateMockMovieDescription(),
   },
   userDetails: {
-    watchlist: Boolean(getRandomInteger(0, 2)),
-    alreadyWatched: Boolean(getRandomInteger(0, 2)),
+    watchlist: Boolean(getRandomInteger(0, 1)),
+    alreadyWatched: Boolean(getRandomInteger(0, 1)),
     watchingDate: generateDate(-1000, 0),
-    favorite: Boolean(getRandomInteger(0, 2)),
+    favorite: Boolean(getRandomInteger(0, 1)),
   }
 });
 

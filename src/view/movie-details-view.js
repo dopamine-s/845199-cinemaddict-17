@@ -30,12 +30,11 @@ const createCommentTemplate = (commentItem) => {
     </p>
   </div>
   </li>`;
-
 };
 
-const createCommentsTemplate = (movieComments) => {
+const createAllCommentsTemplate = (movieComments) => {
   let commentsTemplate = '';
-  commentsTemplate = movieComments.map((item) => createCommentTemplate(item));
+  commentsTemplate = movieComments.map((commentItem) => createCommentTemplate(commentItem));
   return commentsTemplate.join();
 };
 
@@ -66,7 +65,7 @@ const createMovieDetailsTemplate = (movie, movieComments) => {
     }
   } = movie;
 
-  const commentsTemplate = createCommentsTemplate(movieComments);
+  const commentsTemplate = createAllCommentsTemplate(movieComments);
 
   const isWatchlistActive = watchlist ? 'film-details__control-button--active' : '';
   const isAlreadyWatchedActive = alreadyWatched ? 'film-details__control-button--active' : '';
@@ -191,7 +190,7 @@ const createMovieDetailsTemplate = (movie, movieComments) => {
 
         <section class="film-details__controls">
           <button type="button" class="film-details__control-button film-details__control-button--watchlist ${isWatchlistActive}" id="watchlist" name="watchlist">Add to watchlist</button>
-          <button type="button" class="film-details__control-button film-details__control-button--active film-details__control-button--watched ${isAlreadyWatchedActive}" id="watched" name="watched">Already watched</button>
+          <button type="button" class="film-details__control-button film-details__control-button--watched ${isAlreadyWatchedActive}" id="watched" name="watched">Already watched</button>
           <button type="button" class="film-details__control-button film-details__control-button--favorite ${isFavoriteActive}" id="favorite" name="favorite">Add to favorites</button>
         </section>
       </div>
@@ -201,7 +200,7 @@ const createMovieDetailsTemplate = (movie, movieComments) => {
           <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">${comments.length}</span></h3>
 
           <ul class="film-details__comments-list">
-            ${commentsTemplate}
+           <!--${commentsTemplate}-->
           </ul>
 
           <div class="film-details__new-comment">
