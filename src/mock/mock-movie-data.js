@@ -155,7 +155,7 @@ const generateMockMovieActors = () => {
 
 export const generateMockMovieData = () => ({
   id: generateId(),
-  comments: Array.from({ length: getRandomInteger(0, MAX_COMMENTS) }, () => getRandomInteger(0, 9)),
+  comments: Array.from({ length: getRandomInteger(0, MAX_COMMENTS - 1) }, () => getRandomInteger(1, MAX_COMMENTS)),
   filmInfo: {
     title: generateMockMovieTitle (),
     alternativeTitle: '',

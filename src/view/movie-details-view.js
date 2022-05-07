@@ -5,43 +5,46 @@ const createCommentTemplate = (commentItem) => {
   const {
     author,
     comment,
-    date,
+    commentDate,
     emotion,
   } = commentItem;
 
-  const getAdaptedCommentDate = () => {
-    if (date && date !== null) {
+  const getAdaptedCommentDate = (date) => {
+    if (date) {
       return adaptCommentDate(date);
-    } else {
-      return '';
     }
+
+    return '';
   };
 
   return `<li class="film-details__comment">
-  <span class="film-details__comment-emoji">
-    <img src="./images/emoji/${emotion}.png" width="55" height="55" alt="emoji-sleeping">
-  </span>
-  <div>
-    <p class="film-details__comment-text">${comment}</p>
-    <p class="film-details__comment-info">
-      <span class="film-details__comment-author">${author}</span>
-      <span class="film-details__comment-day">${getAdaptedCommentDate()}</span>
-      <button class="film-details__comment-delete">Delete</button>
-    </p>
-  </div>
-  </li>`;
+            <span class="film-details__comment-emoji">
+              <img src="./images/emoji/${emotion}.png" width="55" height="55" alt="emoji-sleeping">
+            </span>
+            <div>
+              <p class="film-details__comment-text">${comment}</p>
+              <p class="film-details__comment-info">
+                <span class="film-details__comment-author">${author}</span>
+                <span class="film-details__comment-day">${getAdaptedCommentDate(commentDate)}</span>
+                <button class="film-details__comment-delete">Delete</button>
+              </p>
+            </div>
+          </li>`;
 };
 
 const createAllComments = (movieComments) => {
   let commentsList = '';
+
   for (const comment of movieComments) {
-    commentsList = commentsList + createCommentTemplate(comment);
-    return commentsList;
+    if (comment) {
+      commentsList = commentsList + createCommentTemplate(comment);
+    }
   }
-  console.log(commentsList);
+
+  return commentsList;
 };
 
-const createMovieDetailsTemplate = (movie) => {
+const createMovieDetailsTemplate = (movie, movieComments) => {
   const {
     comments,
     filmInfo: {
@@ -72,58 +75,14 @@ const createMovieDetailsTemplate = (movie) => {
   const isAlreadyWatchedActive = alreadyWatched ? 'film-details__control-button--active' : '';
   const isFavoriteActive = favorite ? 'film-details__control-button--active' : '';
 
-  const getHumanizeDayDate = () => {
-    if (date && date !== null) {
-      return humanizeDayDate(date);
-    } else {
-      return '';
+  const getHumanizeDayDate = (dayDate) => {
+    if (dayDate) {
+      return humanizeDayDate(dayDate);
     }
+    return '';
   };
 
-  const takeAlternativeTitle = () => {
-    if (alternativeTitle) {
-      return alternativeTitle;
-    } else {
-      return '';
-    }
-  };
-
-  const getRuntime = () => getTimeFromMins(runtime);
-
-  const takeAgeRating = () => {
-    if (ageRating) {
-      return ageRating;
-    } else {
-      return '';
-    }
-  };
-
-  const takeMainGenre = () => {
-    const mainGenre = genre[0];
-    if (mainGenre) {
-      return mainGenre;
-    } else {
-      return '';
-    }
-  };
-
-  const takeSecondGenre = () => {
-    const secondGenre = genre[1];
-    if (secondGenre) {
-      return secondGenre;
-    } else {
-      return '';
-    }
-  };
-
-  const takeThirdGenre = () => {
-    const thirdGenre = genre[2];
-    if (thirdGenre) {
-      return thirdGenre;
-    } else {
-      return '';
-    }
-  };
+  const getTimeInHoursAndMins = (timeInMinutes) => getTimeFromMins(timeInMinutes);
 
   return (
     `<section class="film-details">
@@ -134,16 +93,15 @@ const createMovieDetailsTemplate = (movie) => {
         </div>
         <div class="film-details__info-wrap">
           <div class="film-details__poster">
-            <img class="film-details__poster-img" src="${poster}" alt="">
-
-            <p class="film-details__age">${takeAgeRating()}+</p>
+            <img class="film-details__poster-img" src="${poster}" alt="${title}">
+            <p class="film-details__age">${ageRating ? `${ageRating}+` : ''}</p>
           </div>
 
           <div class="film-details__info">
             <div class="film-details__info-head">
               <div class="film-details__title-wrap">
                 <h3 class="film-details__title">${title}</h3>
-                <p class="film-details__title-original">${takeAlternativeTitle()}</p>
+                <p class="film-details__title-original">${alternativeTitle || ''}</p>
               </div>
 
               <div class="film-details__rating">
@@ -166,11 +124,11 @@ const createMovieDetailsTemplate = (movie) => {
               </tr>
               <tr class="film-details__row">
                 <td class="film-details__term">Release Date</td>
-                <td class="film-details__cell">${getHumanizeDayDate()}</td>
+                <td class="film-details__cell">${getHumanizeDayDate(date)}</td>
               </tr>
               <tr class="film-details__row">
                 <td class="film-details__term">Runtime</td>
-                <td class="film-details__cell">${getRuntime()}</td>
+                <td class="film-details__cell">${getTimeInHoursAndMins(runtime)}</td>
               </tr>
               <tr class="film-details__row">
                 <td class="film-details__term">Country</td>
@@ -179,9 +137,8 @@ const createMovieDetailsTemplate = (movie) => {
               <tr class="film-details__row">
                 <td class="film-details__term">Genres</td>
                 <td class="film-details__cell">
-                  <span class="film-details__genre">${takeMainGenre()}</span>
-                  <span class="film-details__genre">${takeSecondGenre()}</span>
-                  <span class="film-details__genre">${takeThirdGenre()}</span></td>
+                  ${genre.map((genreItem) => `<span class="film-details__genre">${genreItem}</span>`).join('')}
+                </td>
               </tr>
             </table>
 
@@ -201,7 +158,7 @@ const createMovieDetailsTemplate = (movie) => {
           <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">${comments.length}</span></h3>
 
           <ul class="film-details__comments-list">
-          ${createAllComments(comments)}
+          ${createAllComments(movieComments)}
           </ul>
 
           <div class="film-details__new-comment">
@@ -241,13 +198,13 @@ const createMovieDetailsTemplate = (movie) => {
 };
 
 export default class MovieDetailsView {
-  constructor(movie, commentItem) {
+  constructor(movie, movieComments) {
     this.movie = movie;
-    this.commentItem = commentItem;
+    this.movieComments = movieComments;
   }
 
   getTemplate() {
-    return createMovieDetailsTemplate(this.movie);
+    return createMovieDetailsTemplate(this.movie, this.movieComments);
   }
 
   getElement() {

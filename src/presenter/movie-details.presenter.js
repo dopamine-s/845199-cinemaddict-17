@@ -3,7 +3,6 @@ import { getCommentsByIds } from '../utils.js';
 import { render } from '../render.js';
 
 export default class MovieDetailsPresenter {
-
   init = (movieDetailsContainer, mockMoviesModel) => {
     this.movieDetailsContainer = movieDetailsContainer;
     this.mockMoviesModel = mockMoviesModel;
