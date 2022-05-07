@@ -33,16 +33,15 @@ const createCommentTemplate = (commentItem) => {
 };
 
 const createAllComments = (movieComments) => {
-  let comments = '';
+  let commentsList = '';
   for (const comment of movieComments) {
-    comments = comments + createCommentTemplate(comment);
-    return comments;
+    commentsList = commentsList + createCommentTemplate(comment);
+    return commentsList;
   }
+  console.log(commentsList);
 };
 
 const createMovieDetailsTemplate = (movie) => {
-  const allComments = [];
-
   const {
     comments,
     filmInfo: {
@@ -202,7 +201,7 @@ const createMovieDetailsTemplate = (movie) => {
           <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">${comments.length}</span></h3>
 
           <ul class="film-details__comments-list">
-          ${createAllComments(allComments)}
+          ${createAllComments(comments)}
           </ul>
 
           <div class="film-details__new-comment">
