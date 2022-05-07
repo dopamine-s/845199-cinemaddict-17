@@ -10,13 +10,12 @@ export default class MovieDetailsPresenter {
     this.movies = [...this.mockMoviesModel.getMockMoviesData()];
     this.comments = [...this.mockMoviesModel.getMockComments()];
 
-    for (let i = 0; i < this.movies.length; i++) {
-      const movieComments = getCommentsByIds(this.comments, this.movies[i].comments);
 
-      render(new MovieDetailsView(
-        this.movies[i],
-        movieComments
-      ), this.movieDetailsContainer);
-    }
+    const movieComments = getCommentsByIds(this.comments, this.movies[0].comments);
+
+    render(new MovieDetailsView(
+      this.movies[0],
+      movieComments
+    ), this.movieDetailsContainer);
   };
 }

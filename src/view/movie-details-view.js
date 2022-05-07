@@ -32,13 +32,17 @@ const createCommentTemplate = (commentItem) => {
   </li>`;
 };
 
-const createAllCommentsTemplate = (movieComments) => {
-  let commentsTemplate = '';
-  commentsTemplate = movieComments.map((commentItem) => createCommentTemplate(commentItem));
-  return commentsTemplate.join();
+const createAllComments = (movieComments) => {
+  let comments = '';
+  for (const commentItem of movieComments) {
+    comments = comments + createCommentTemplate(commentItem);
+    return comments;
+  }
 };
 
-const createMovieDetailsTemplate = (movie, movieComments) => {
+const createMovieDetailsTemplate = (movie) => {
+  const allComments = [];
+
   const {
     comments,
     filmInfo: {
@@ -64,8 +68,6 @@ const createMovieDetailsTemplate = (movie, movieComments) => {
       favorite,
     }
   } = movie;
-
-  const commentsTemplate = createAllCommentsTemplate(movieComments);
 
   const isWatchlistActive = watchlist ? 'film-details__control-button--active' : '';
   const isAlreadyWatchedActive = alreadyWatched ? 'film-details__control-button--active' : '';
@@ -200,7 +202,7 @@ const createMovieDetailsTemplate = (movie, movieComments) => {
           <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">${comments.length}</span></h3>
 
           <ul class="film-details__comments-list">
-           <!--${commentsTemplate}-->
+          ${createAllComments(allComments)}
           </ul>
 
           <div class="film-details__new-comment">
