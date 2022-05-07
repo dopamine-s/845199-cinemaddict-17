@@ -34,8 +34,8 @@ const createCommentTemplate = (commentItem) => {
 
 const createAllComments = (movieComments) => {
   let comments = '';
-  for (const commentItem of movieComments) {
-    comments = comments + createCommentTemplate(commentItem);
+  for (const comment of movieComments) {
+    comments = comments + createCommentTemplate(comment);
     return comments;
   }
 };
@@ -242,13 +242,13 @@ const createMovieDetailsTemplate = (movie) => {
 };
 
 export default class MovieDetailsView {
-  constructor(movie, movieComments) {
+  constructor(movie, commentItem) {
     this.movie = movie;
-    this.movieComments = movieComments;
+    this.commentItem = commentItem;
   }
 
   getTemplate() {
-    return createMovieDetailsTemplate(this.movie, this.movieComments);
+    return createMovieDetailsTemplate(this.movie);
   }
 
   getElement() {
