@@ -13,7 +13,7 @@ const siteFooterElement = document.querySelector('.footer');
 const filmsPresenter = new FilmsPresenter();
 const movieDetailsPresenter = new MovieDetailsPresenter();
 const mockMoviesModel = new MockMoviesModel();
-const movies = mockMoviesModel.getMockMoviesData();
+const movies = mockMoviesModel.mockMoviesData;
 
 render(new UserRankView(), siteHeaderElement);
 render(new NavigationMenuView(), siteMainElement);
