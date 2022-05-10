@@ -6,23 +6,27 @@ const createMoviesAmountTemplate = (moviesAmount) =>
   </section>`;
 
 export default class MoviesAmountView {
+  #element = null;
+  #movies = null;
+
   constructor(movies) {
-    this.moviesAmount = movies.length;
+    this.#movies = movies;
+    this.moviesAmount = this.#movies.length;
   }
 
-  getTemplate() {
+  get template() {
     return createMoviesAmountTemplate(this.moviesAmount);
   }
 
-  getElement() {
-    if (!this.element) {
-      this.element = createElement(this.getTemplate(this.moviesAmount));
+  get element() {
+    if (!this.#element) {
+      this.#element = createElement(this.template);
     }
 
-    return this.element;
+    return this.#element;
   }
 
   removeElement() {
-    this.element = null;
+    this.#element = null;
   }
 }

@@ -198,24 +198,28 @@ const createMovieDetailsTemplate = (movie, movieComments) => {
 };
 
 export default class MovieDetailsView {
+  #element = null;
+  #movie = null;
+  #movieComments = null;
+
   constructor(movie, movieComments) {
-    this.movie = movie;
-    this.movieComments = movieComments;
+    this.#movie = movie;
+    this.#movieComments = movieComments;
   }
 
-  getTemplate() {
-    return createMovieDetailsTemplate(this.movie, this.movieComments);
+  get template() {
+    return createMovieDetailsTemplate(this.#movie, this.#movieComments);
   }
 
-  getElement() {
-    if (!this.element) {
-      this.element = createElement(this.getTemplate());
+  get element() {
+    if (!this.#element) {
+      this.#element = createElement(this.template);
     }
 
-    return this.element;
+    return this.#element;
   }
 
   removeElement() {
-    this.element = null;
+    this.#element = null;
   }
 }
