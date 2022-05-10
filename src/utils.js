@@ -56,4 +56,6 @@ const getCommentsByIds = (allComments, singleMovieComments) => {
 
 const generateId = () => Date.now().toString().substring(10) + getRandomInteger(Date.now().toString().substring(8), Date.now().toString().substring(6));
 
-export { getRandomInteger, getRandomArrayElement, generateDate, humanizeDayDate, humanizeYearDate, humanizeCommentDate, adaptCommentDate, getTimeFromMins, generateId, getCommentsByIds };
+const isEscapeKey = (evt) => evt.key === 'Escape' || evt.key === 'Esc';
+
+export { getRandomInteger, getRandomArrayElement, generateDate, humanizeDayDate, humanizeYearDate, humanizeCommentDate, adaptCommentDate, getTimeFromMins, generateId, getCommentsByIds, isEscapeKey };

@@ -8,10 +8,12 @@ import FilmsMostCommentedView from '../view/films-most-commented-view.js';
 import MovieDetailsView from '../view/movie-details-view.js';
 import {getCommentsByIds} from '../utils.js';
 import { render } from '../render.js';
+import { isEscapeKey } from '../utils.js';
+
+const siteFooterElement = document.querySelector('.footer');
 
 export default class FilmsPresenter {
   #filmsContainer = null;
-  #movieDetailsContainer = null;
   #mockMoviesModel = null;
   #movies = null;
   #comments = null;
@@ -26,7 +28,6 @@ export default class FilmsPresenter {
     this.#mockMoviesModel = mockMoviesModel;
     this.#movies = [...this.#mockMoviesModel.mockMoviesData];
     this.#comments = [...this.#mockMoviesModel.mockMoviesComments];
-    this.#movieDetailsContainer = document.body;
 
     render(this.#filmsSectionComponent, this.#filmsContainer);
     render(this.#filmsListComponent, this.#filmsSectionComponent.element);
@@ -40,12 +41,6 @@ export default class FilmsPresenter {
         movieComments,
         this.#filmsContainerComponent.element
       );
-
-      this.#renderMovieDetails(
-        this.#movies[0],
-        movieComments,
-        this.#movieDetailsContainer
-      );
     }
 
     render(new ShowMoreButtonView(), this.#filmsListComponent.element);
@@ -54,14 +49,40 @@ export default class FilmsPresenter {
   }
 
   #renderMovie = (movie, comments, container) => {
+    let movieDetailsComponent = null;
+
     const movieCardComponent = new MovieCardView(movie, comments);
-
     render(movieCardComponent, container);
-  };
 
-  #renderMovieDetails = (movie, comments, container) => {
-    const movieDetailsComponent = new MovieDetailsView(movie, comments);
+    const onEscapeKeyDown = (evt)=> {
+      if(isEscapeKey(evt)) {
+        evt.preventDefault();
+        movieDetailsComponent.element.remove();
+        movieDetailsComponent.removeElement();
+        document.body.classList.remove('hide-overflow');
+        document.removeEventListener('keydown', onEscapeKeyDown);
+      }
+    };
 
-    render(movieDetailsComponent, container);
+    const onMovieDetailsCloseButtonClick = () => {
+      movieDetailsComponent.element.remove();
+      movieDetailsComponent.removeElement();
+      document.body.classList.remove('hide-overflow');
+      document.removeEventListener('keydown', onEscapeKeyDown);
+    };
+
+    const onMovieCardClick = (evt) => {
+      if (evt.target.closest('.film-card__link')) {
+
+        movieDetailsComponent = new MovieDetailsView(movie, comments);
+        render(movieDetailsComponent, siteFooterElement, 'afterend');
+        movieDetailsComponent.element.querySelector('.film-details__close-btn').addEventListener('click', onMovieDetailsCloseButtonClick);
+      }
+
+      document.body.classList.add('hide-overflow');
+      document.addEventListener('keydown', onEscapeKeyDown);
+    };
+
+    movieCardComponent.element.querySelector('.film-card__link').addEventLstener('click', onMovieCardClick);
   };
 }
