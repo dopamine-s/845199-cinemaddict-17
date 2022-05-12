@@ -64,7 +64,7 @@ export default class FilmsPresenter {
       if (this.#movies.length > MOVIES_PER_STEP) {
         render(this.#showMoreButtonComponent, this.#filmsListComponent.element);
 
-        this.#showMoreButtonComponent.element.addEventListener('click', this.#onShowMoreButtonComponentClick);
+        this.#showMoreButtonComponent.element.addEventListener('click', this.#onShowMoreButtonComponentClick.bind(this));
       }
 
       render(new FilmsTopRatedView(), this.#filmsSectionComponent.element);
