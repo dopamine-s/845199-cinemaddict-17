@@ -1,9 +1,5 @@
 import { createElement } from '../render.js';
-
-const createMoviesAmountTemplate = (moviesAmount) =>
-  `<section class="footer__statistics">
-    <p>${moviesAmount} movies inside</p>
-  </section>`;
+import { createMoviesAmountTemplate } from '../templates/movies-amount-template.js';
 
 export default class MoviesAmountView {
   #element = null;

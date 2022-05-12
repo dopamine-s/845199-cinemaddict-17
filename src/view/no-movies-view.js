@@ -1,12 +1,5 @@
 import { createElement } from '../render.js';
-
-const createNoMoviesTemplate = () => (
-  `<section class="films">
-    <section class="films-list">
-      <h2 class="films-list__title">There are no movies in our database</h2>
-    </section>
-  </section>`
-);
+import { createNoMoviesTemplate } from '../templates/no-movies-template.js';
 
 export default class NoMoviesView {
   #element = null;

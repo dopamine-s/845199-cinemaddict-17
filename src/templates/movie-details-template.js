@@ -1,5 +1,5 @@
 import { humanizeDayDate, getTimeFromMins } from '../utils.js';
-import { createCommentTemplate } from './create-comment-template.js';
+import { createCommentTemplate } from './comment-template.js';
 
 const createAllComments = (movieComments) => {
   let commentsList = '';

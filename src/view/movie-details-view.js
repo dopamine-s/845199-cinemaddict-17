@@ -1,5 +1,5 @@
 import { createElement } from '../render.js';
-import { createMovieDetailsTemplate } from '../templates/create-movie-details-template.js';
+import { createMovieDetailsTemplate } from '../templates/movie-details-template.js';
 
 export default class MovieDetailsView {
   #element = null;
