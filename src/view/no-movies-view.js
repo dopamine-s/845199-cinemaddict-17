@@ -1,11 +1,11 @@
 import { createElement } from '../render.js';
-import { createFilmsTopRatedTemplate } from '../templates/films-top-rated-template.js';
+import { createNoMoviesTemplate } from '../templates/no-movies-template.js';
 
-export default class FilmsTopRatedView {
+export default class NoMoviesView {
   #element = null;
 
   get template() {
-    return createFilmsTopRatedTemplate();
+    return createNoMoviesTemplate();
   }
 
   get element() {
