@@ -1,6 +1,6 @@
 import { generateMockMovieData, generateMockComments } from '../mock/mock-movie-data.js';
 
-const MOCK_MOVIES_AMMOUNT = 20;
+const MOCK_MOVIES_AMMOUNT = 30;
 export const MAX_COMMENTS = 20;
 
 export default class MockMoviesModel {
