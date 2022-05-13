@@ -1,22 +1,8 @@
-import { createElement } from '../render.js';
+import AbstractView from '../framework/view/abstract-view.js';
 import { createFilmsTopRatedTemplate } from '../templates/films-top-rated-template.js';
 
-export default class FilmsTopRatedView {
-  #element = null;
-
+export default class FilmsTopRatedView extends AbstractView{
   get template() {
     return createFilmsTopRatedTemplate();
-  }
-
-  get element() {
-    if (!this.#element) {
-      this.#element = createElement(this.template);
-    }
-
-    return this.#element;
-  }
-
-  removeElement() {
-    this.#element = null;
   }
 }
