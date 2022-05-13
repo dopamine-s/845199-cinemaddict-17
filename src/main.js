@@ -3,7 +3,7 @@ import NavigationMenuView from './view/navigation-menu-view.js';
 import FilmsPresenter from './presenter/films-presenter.js';
 import MoviesAmountView from './view/movies-amount-view.js';
 import MockMoviesModel from './model/mock-movies-model.js';
-import { render } from './render.js';
+import { render } from './framework/render.js';
 
 const siteHeaderElement = document.querySelector('.header');
 const siteMainElement = document.querySelector('.main');
