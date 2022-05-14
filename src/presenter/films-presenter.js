@@ -8,9 +8,9 @@ import FilmsTopRatedView from '../view/films-top-rated-view.js';
 import FilmsMostCommentedView from '../view/films-most-commented-view.js';
 import MovieDetailsView from '../view/movie-details-view.js';
 import NoMoviesView from '../view/no-movies-view.js';
-import {getCommentsByIds} from '../utils.js';
+import {getCommentsByIds} from '../utils/utils.js';
 import { render, remove } from '../framework/render.js';
-import { isEscapeKey } from '../utils.js';
+import { isEscapeKey } from '../utils/utils.js';
 
 const MOVIES_PER_STEP = 5;
 

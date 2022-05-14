@@ -1,4 +1,4 @@
-import { humanizeYearDate, getTimeFromMins } from '../utils.js';
+import { humanizeYearDate, getTimeFromMins } from '../utils/utils.js';
 
 export const createMovieCardTemplate = (movie) => {
   const MAX_DESCRIPTION_LENGTH = 140;

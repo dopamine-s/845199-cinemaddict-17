@@ -1,4 +1,4 @@
-import { adaptCommentDate } from '../utils.js';
+import { adaptCommentDate } from '../utils/utils.js';
 
 export const createCommentTemplate = (commentItem) => {
   const {
