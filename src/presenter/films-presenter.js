@@ -9,7 +9,7 @@ import FilmsMostCommentedView from '../view/films-most-commented-view.js';
 import MovieDetailsView from '../view/movie-details-view.js';
 import NoMoviesView from '../view/no-movies-view.js';
 import {getCommentsByIds} from '../utils.js';
-import { render } from '../framework/render.js';
+import { render, remove } from '../framework/render.js';
 import { isEscapeKey } from '../utils.js';
 
 const MOVIES_PER_STEP = 5;
@@ -79,8 +79,7 @@ export default class FilmsPresenter {
     this.#renderedMoviesCount += MOVIES_PER_STEP;
 
     if (this.#renderedMoviesCount >= this.#movies.length) {
-      this.#showMoreButtonComponent.element.remove();
-      this.#showMoreButtonComponent.removeElement();
+      remove(this.#showMoreButtonComponent);
     }
   };
 
@@ -88,8 +87,7 @@ export default class FilmsPresenter {
     if(!this.#movieDetailsComponent) {
       return;
     }
-    this.#movieDetailsComponent.element.remove();
-    this.#movieDetailsComponent.removeElement();
+    remove(this.#movieDetailsComponent);
     document.body.classList.remove('hide-overflow');
     document.removeEventListener('keydown', this.#onEscapeKeyDown);
   };
