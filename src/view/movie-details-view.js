@@ -14,4 +14,14 @@ export default class MovieDetailsView extends AbstractView{
   get template() {
     return createMovieDetailsTemplate(this.#movie, this.#movieComments);
   }
+
+  setClickHandler = (callback) => {
+    this._callback.click = callback;
+    this.element.querySelector('.film-details__close-btn').addEventListener('click', this.#clickHandler);
+  };
+
+  #clickHandler = (evt) => {
+    evt.preventDefault();
+    this._callback.click();
+  };
 }

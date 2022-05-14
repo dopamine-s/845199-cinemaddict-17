@@ -64,15 +64,14 @@ export default class FilmsPresenter {
     if (this.#movies.length > MOVIES_PER_STEP) {
       render(this.#showMoreButtonComponent, this.#filmsListComponent.element);
 
-      this.#showMoreButtonComponent.element.addEventListener('click', this.#onShowMoreButtonComponentClick.bind(this));
+      this.#showMoreButtonComponent.setClickHandler(this.#onShowMoreButtonComponentClick);
     }
 
     render(new FilmsTopRatedView(), this.#filmsSectionComponent.element);
     render(new FilmsMostCommentedView(), this.#filmsSectionComponent.element);
   }
 
-  #onShowMoreButtonComponentClick(evt) {
-    evt.preventDefault();
+  #onShowMoreButtonComponentClick = () => {
     this.#movies
       .slice(this.#renderedMoviesCount, this.#renderedMoviesCount + MOVIES_PER_STEP)
       .forEach((singleMovie) => this.#renderMovie(singleMovie, getCommentsByIds(this.#comments, singleMovie.comments), this.#filmsContainerComponent.element));
@@ -83,7 +82,7 @@ export default class FilmsPresenter {
       this.#showMoreButtonComponent.element.remove();
       this.#showMoreButtonComponent.removeElement();
     }
-  }
+  };
 
   #closeDetailsView = () => {
     if(!this.#movieDetailsComponent) {
@@ -105,25 +104,24 @@ export default class FilmsPresenter {
   #renderMovieDetails(movie, comments) {
     this.#movieDetailsComponent = new MovieDetailsView(movie, comments);
     render(this.#movieDetailsComponent, siteFooterElement, 'afterend');
-    this.#movieDetailsComponent.element.querySelector('.film-details__close-btn').addEventListener('click', this.#closeDetailsView);
+    this.#movieDetailsComponent.setClickHandler(this.#closeDetailsView);
   }
 
   #renderMovie(movie, comments, container) {
     const movieCardComponent = new MovieCardView(movie, comments);
     render(movieCardComponent, container);
 
-    const onMovieCardClick = (evt) => {
+    const onMovieCardClick = () => {
       if (this.#movieDetailsComponent) {
         this.#closeDetailsView();
       }
-      if (evt.target.closest('.film-card__link')) {
-        this.#renderMovieDetails(movie, comments);
-      }
+
+      this.#renderMovieDetails(movie, comments);
 
       document.body.classList.add('hide-overflow');
       document.addEventListener('keydown', this.#onEscapeKeyDown);
     };
 
-    movieCardComponent.element.querySelector('.film-card__link').addEventListener('click', onMovieCardClick);
+    movieCardComponent.setClickHandler(onMovieCardClick);
   }
 }
