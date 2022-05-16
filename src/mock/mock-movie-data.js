@@ -1,4 +1,4 @@
-import { getRandomInteger, getRandomArrayElement, generateDate, generateId } from '../utils.js';
+import { getRandomInteger, getRandomArrayElement, generateDate, generateId } from '../utils/utils.js';
 import { MAX_COMMENTS } from '../model/mock-movies-model.js';
 
 const generateMockCommentText = () => {
