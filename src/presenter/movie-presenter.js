@@ -49,13 +49,8 @@ export default class MoviePresenter {
       return;
     }
 
-    if (this.#mode === Mode.DEFAULT) {
-      replace(this.#movieCardComponent, prevMovieCardComponent);
-    }
-
-    if (this.#mode === Mode.DETAILS) {
-      replace(this.#movieDetailsComponent, prevMovieDetailsComponent);
-    }
+    replace(this.#movieCardComponent, prevMovieCardComponent);
+    replace(this.#movieDetailsComponent, prevMovieDetailsComponent);
 
     remove(prevMovieCardComponent);
     remove(prevMovieDetailsComponent);
@@ -67,13 +62,12 @@ export default class MoviePresenter {
   };
 
   resetView = () => {
-    if (this.#mode !== Mode.DEFAULT) {
+    if (this.#mode === Mode.DETAILS) {
       this.#onCloseDetailsView();
     }
   };
 
-  #onCloseDetailsView = (movie, comments) => {
-    this.#changeMovie(movie, comments);
+  #onCloseDetailsView = () => {
     remove(this.#movieDetailsComponent);
     document.body.classList.remove('hide-overflow');
     document.removeEventListener('keydown', this.#onEscapeKeyDown);
@@ -89,11 +83,15 @@ export default class MoviePresenter {
 
   #renderMovieDetails = () => {
     render(this.#movieDetailsComponent, siteFooterElement, RenderPosition.AFTEREND);
+    this.#movieDetailsComponent.setCloseDetailsClickHandler(this.#onCloseDetailsView);
+    this.#movieDetailsComponent.setWatchlistClickHandler(this.#onWatchlistClick);
+    this.#movieDetailsComponent.setAlreadyWatchedClickHandler(this.#onAlreadyWatchedClick);
+    this.#movieDetailsComponent.setFavoriteClickHandler(this.#onFavoriteClick);
   };
 
   #onMovieCardClick = () => {
-    this.#renderMovieDetails();
     this.#changeMode();
+    this.#renderMovieDetails();
     this.#mode = Mode.DETAILS;
 
     document.body.classList.add('hide-overflow');
