@@ -34,15 +34,8 @@ export default class MoviePresenter {
     this.#movieCardComponent = new MovieCardView(this.#movie, this.#comments);
     this.#movieDetailsComponent = new MovieDetailsView(this.#movie, this.#comments);
 
-    this.#movieCardComponent.setDetailsClickHandler(this.#onMovieCardClick);
-    this.#movieCardComponent.setWatchlistClickHandler(this.#onWatchlistClick);
-    this.#movieCardComponent.setAlreadyWatchedClickHandler(this.#onAlreadyWatchedClick);
-    this.#movieCardComponent.setFavoriteClickHandler(this.#onFavoriteClick);
-
-    this.#movieDetailsComponent.setCloseDetailsClickHandler(this.#onCloseDetailsView);
-    this.#movieDetailsComponent.setWatchlistClickHandler(this.#onWatchlistClick);
-    this.#movieDetailsComponent.setAlreadyWatchedClickHandler(this.#onAlreadyWatchedClick);
-    this.#movieDetailsComponent.setFavoriteClickHandler(this.#onFavoriteClick);
+    this.#setMovieCardHandlers();
+    this.#setMovieDetailsHandlers();
 
     if (prevMovieCardComponent === null || prevMovieDetailsComponent === null) {
       render(this.#movieCardComponent, this.#movieContainer);
@@ -67,6 +60,20 @@ export default class MoviePresenter {
     }
   };
 
+  #setMovieCardHandlers = () => {
+    this.#movieCardComponent.setDetailsClickHandler(this.#onMovieCardClick);
+    this.#movieCardComponent.setWatchlistClickHandler(this.#onWatchlistClick);
+    this.#movieCardComponent.setAlreadyWatchedClickHandler(this.#onAlreadyWatchedClick);
+    this.#movieCardComponent.setFavoriteClickHandler(this.#onFavoriteClick);
+  };
+
+  #setMovieDetailsHandlers = () => {
+    this.#movieDetailsComponent.setCloseDetailsClickHandler(this.#onCloseDetailsView);
+    this.#movieDetailsComponent.setWatchlistClickHandler(this.#onWatchlistClick);
+    this.#movieDetailsComponent.setAlreadyWatchedClickHandler(this.#onAlreadyWatchedClick);
+    this.#movieDetailsComponent.setFavoriteClickHandler(this.#onFavoriteClick);
+  };
+
   #onCloseDetailsView = () => {
     remove(this.#movieDetailsComponent);
     document.body.classList.remove('hide-overflow');
@@ -83,10 +90,7 @@ export default class MoviePresenter {
 
   #renderMovieDetails = () => {
     render(this.#movieDetailsComponent, siteFooterElement, RenderPosition.AFTEREND);
-    this.#movieDetailsComponent.setCloseDetailsClickHandler(this.#onCloseDetailsView);
-    this.#movieDetailsComponent.setWatchlistClickHandler(this.#onWatchlistClick);
-    this.#movieDetailsComponent.setAlreadyWatchedClickHandler(this.#onAlreadyWatchedClick);
-    this.#movieDetailsComponent.setFavoriteClickHandler(this.#onFavoriteClick);
+    this.#setMovieDetailsHandlers();
   };
 
   #onMovieCardClick = () => {
