@@ -1,4 +1,5 @@
-import { getRandomInteger, getRandomArrayElement, generateDate, generateId } from '../utils/utils.js';
+import { getRandomInteger, getRandomArrayElement, generateDate } from '../utils/utils.js';
+import { nanoid } from 'nanoid';
 import { MAX_COMMENTS } from '../model/mock-movies-model.js';
 
 const generateMockCommentText = () => {
@@ -154,7 +155,7 @@ const generateMockMovieActors = () => {
 };
 
 export const generateMockMovieData = () => ({
-  id: generateId(),
+  id: nanoid(),
   comments: Array.from({ length: getRandomInteger(0, MAX_COMMENTS - 1) }, () => getRandomInteger(1, MAX_COMMENTS)),
   filmInfo: {
     title: generateMockMovieTitle (),
