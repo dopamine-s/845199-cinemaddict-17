@@ -67,3 +67,33 @@ export const updateItem = (items, newItem) => {
     ...items.slice(index + 1),
   ];
 };
+
+// Функция помещает задачи без даты в конце списка,
+// возвращая нужный вес для колбэка sort
+const getWeightForNullData = (dataA, dataB) => {
+  if (dataA === null && dataB === null) {
+    return 0;
+  }
+
+  if (dataA === null) {
+    return 1;
+  }
+
+  if (dataB === null) {
+    return -1;
+  }
+
+  return null;
+};
+
+export const sortMovieByDate = (movieA, movieB) => {
+  const weight = getWeightForNullData(movieA.filmInfo.release.date, movieB.filmInfo.release.date);
+
+  return weight ?? dayjs(movieA.filmInfo.release.date).diff(dayjs(movieB.filmInfo.release.date));
+};
+
+export const sortMovieByRating = (movieA, movieB) => {
+  const weight = getWeightForNullData(movieA.filmInfo.totalRating, movieB.filmInfo.totalRating);
+
+  return weight ?? movieB.filmInfo.totalRating - movieA.filmInfo.totalRating;
+};
