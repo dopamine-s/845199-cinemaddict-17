@@ -7,10 +7,15 @@ import ShowMoreButtonView from '../view/show-more-button-view.js';
 import FilmsTopRatedView from '../view/films-top-rated-view.js';
 import FilmsMostCommentedView from '../view/films-most-commented-view.js';
 import NoMoviesView from '../view/no-movies-view.js';
-import {getCommentsByIds, updateItem } from '../utils/utils.js';
+import {getCommentsByIds, updateItem, sortMovieByDate, sortMovieByRating } from '../utils/utils.js';
+import { SortType } from '../consts.js';
 import { render, remove } from '../framework/render.js';
 
 const MOVIES_PER_STEP = 5;
+const SortMode = {
+  DEFAULT: 'DEFAULT',
+  REVERSE: 'REVERSE',
+};
 
 export default class FilmsPresenter {
   #filmsContainer = null;
@@ -19,6 +24,9 @@ export default class FilmsPresenter {
   #comments = [];
   #renderedMoviesCount = MOVIES_PER_STEP;
   #moviePresenter = new Map();
+  #currentSortType = SortType.DEFAULT;
+  #sourcedMovies = [];
+  #sortMode = SortMode.DEFAULT;
 
   #noMoviesComponent = new NoMoviesView();
   #sortViewComponent = new SortView();
@@ -36,6 +44,7 @@ export default class FilmsPresenter {
 
   init = () => {
     this.#movies = [...this.#mockMoviesModel.mockMoviesData];
+    this.#sourcedMovies = [...this.#mockMoviesModel.mockMoviesData];
     this.#comments = [...this.#mockMoviesModel.mockMoviesComments];
 
     this.#renderMoviesBlock();
@@ -57,12 +66,51 @@ export default class FilmsPresenter {
 
   #onMovieChange = (updatedMovie, comments) => {
     this.#movies = updateItem(this.#movies, updatedMovie);
+    this.#sourcedMovies = updateItem(this.#sourcedMovies, updatedMovie);
     this.#moviePresenter.get(updatedMovie.id).init(updatedMovie, comments);
+  };
+
+  #sortMovies = (sortType) => {
+    switch (sortType) {
+      case SortType.DATE:
+        this.#movies.sort(sortMovieByDate);
+        if (this.#sortMode === SortMode.DEFAULT) {
+          this.#sortMode = SortMode.REVERSE;
+          return;
+        }
+        this.#movies.reverse();
+        this.#sortMode = SortMode.DEFAULT;
+        break;
+      case SortType.RATING:
+        this.#movies.sort(sortMovieByRating);
+        if (this.#sortMode === SortMode.DEFAULT) {
+          this.#sortMode = SortMode.REVERSE;
+          return;
+        }
+        this.#movies.reverse();
+        this.#sortMode = SortMode.DEFAULT;
+        break;
+      default:
+        this.#movies = [...this.#sourcedMovies];
+    }
+
+    this.#currentSortType = sortType;
+  };
+
+  #onSortTypeChange = (sortType) => {
+    if (this.#currentSortType === sortType.DEFAULT) {
+      return;
+    }
+
+    this.#sortMovies(sortType);
+    this.#clearMoviesList();
+    this.#renderMoviesList();
   };
 
   #onModeChange = () => {
     this.#moviePresenter.forEach((presenter) => presenter.resetView());
   };
+
 
   #renderMovie = (movie, comments, container) => {
     const moviePresenter = new MoviePresenter(container, this.#onMovieChange, this.#onModeChange);
@@ -82,6 +130,7 @@ export default class FilmsPresenter {
 
   #renderSortViewComponent = () => {
     render(this.#sortViewComponent, this.#filmsContainer);
+    this.#sortViewComponent.setSortTypeChangeHandler(this.#onSortTypeChange);
   };
 
   #renderFilmsSectionComponent = () => {
