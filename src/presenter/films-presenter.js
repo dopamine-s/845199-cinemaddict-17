@@ -12,6 +12,10 @@ import { SortType } from '../consts.js';
 import { render, remove } from '../framework/render.js';
 
 const MOVIES_PER_STEP = 5;
+const SortMode = {
+  DEFAULT: 'DEFAULT',
+  REVERSE: 'REVERSE',
+};
 
 export default class FilmsPresenter {
   #filmsContainer = null;
@@ -22,6 +26,7 @@ export default class FilmsPresenter {
   #moviePresenter = new Map();
   #currentSortType = SortType.DEFAULT;
   #sourcedMovies = [];
+  #sortMode = SortMode.DEFAULT;
 
   #noMoviesComponent = new NoMoviesView();
   #sortViewComponent = new SortView();
@@ -69,9 +74,21 @@ export default class FilmsPresenter {
     switch (sortType) {
       case SortType.DATE:
         this.#movies.sort(sortMovieByDate);
+        if (this.#sortMode === SortMode.DEFAULT) {
+          this.#sortMode = SortMode.REVERSE;
+          return;
+        }
+        this.#movies.reverse();
+        this.#sortMode = SortMode.DEFAULT;
         break;
       case SortType.RATING:
         this.#movies.sort(sortMovieByRating);
+        if (this.#sortMode === SortMode.DEFAULT) {
+          this.#sortMode = SortMode.REVERSE;
+          return;
+        }
+        this.#movies.reverse();
+        this.#sortMode = SortMode.DEFAULT;
         break;
       default:
         this.#movies = [...this.#sourcedMovies];
@@ -81,7 +98,7 @@ export default class FilmsPresenter {
   };
 
   #onSortTypeChange = (sortType) => {
-    if (this.#currentSortType === sortType) {
+    if (this.#currentSortType === sortType.DEFAULT) {
       return;
     }
 
