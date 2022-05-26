@@ -59,10 +59,11 @@ export default class FilmsPresenter {
     }
   };
 
-  #onMovieChange = (updatedMovie, comments) => {
+  #onMovieChange = (updatedMovie, updatedComments) => {
     this.#movies = updateItem(this.#movies, updatedMovie);
+    this.#comments = updateItem(this.#comments, updatedComments);
     this.#sourcedMovies = updateItem(this.#sourcedMovies, updatedMovie);
-    this.#moviePresenter.get(updatedMovie.id).init(updatedMovie, comments);
+    this.#moviePresenter.get(updatedMovie.id).init(updatedMovie, updatedComments);
   };
 
   #sortMovies = (sortType) => {

@@ -1,4 +1,7 @@
 import dayjs from 'dayjs';
+import duration from 'dayjs/plugin/duration';
+
+dayjs.extend(duration);
 
 // Функция из интернета по генерации случайного числа из диапазона
 // Источник - https://github.com/you-dont-need/You-Dont-Need-Lodash-Underscore#_random
@@ -37,11 +40,7 @@ export const adaptCommentDate = (data) => {
   return dayjs(data).format('YYYY/MM/DD HH:MM');
 };
 
-export const getTimeFromMins = (mins) => {
-  const hours = Math.trunc(mins / 60);
-  const minutes = mins % 60;
-  return `${hours}h ${minutes}m`;
-};
+export const getTimeFromMins = (timeInMinutes) => dayjs.duration(timeInMinutes, 'minutes').format('H[h] m[min]');
 
 export const getCommentsByIds = (allComments, singleMovieComments) => {
   const resultComments = [];
