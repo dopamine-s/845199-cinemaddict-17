@@ -1,5 +1,5 @@
-import { humanizeDayDate, getTimeFromMins } from '../utils/utils.js';
 import { createCommentTemplate } from './comment-template.js';
+import { humanizeDayDate, getTimeFromMins } from '../utils/utils.js';
 
 const createAllComments = (movieComments) => {
   let commentsList = '';
@@ -39,6 +39,10 @@ export const createMovieDetailsTemplate = (movie, movieComments) => {
       favorite,
     }
   } = movie;
+
+  const commentEmojiTemplate = movie.commentEmoji ?
+    `<img src="images/emoji/${movie.commentEmoji}.png" width="55" height="55" alt="emoji-${movie.commentEmoji}}"></img>`
+    : '';
 
   const isWatchlistActive = watchlist ? 'film-details__control-button--active' : '';
   const isAlreadyWatchedActive = alreadyWatched ? 'film-details__control-button--active' : '';
@@ -131,10 +135,10 @@ export const createMovieDetailsTemplate = (movie, movieComments) => {
           </ul>
 
           <div class="film-details__new-comment">
-            <div class="film-details__add-emoji-label"></div>
+            <div class="film-details__add-emoji-label">${commentEmojiTemplate}</div>
 
             <label class="film-details__comment-label">
-              <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment"></textarea>
+              <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment">${movie.commentText ? movie.commentText : ''}</textarea>
             </label>
 
             <div class="film-details__emoji-list">

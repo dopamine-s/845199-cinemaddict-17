@@ -56,6 +56,7 @@ export default class MoviePresenter {
 
   resetView = () => {
     if (this.#mode === Mode.DETAILS) {
+      this.#movieDetailsComponent.reset(this.#movie);
       this.#onCloseDetailsView();
     }
   };
@@ -84,7 +85,8 @@ export default class MoviePresenter {
   #onEscapeKeyDown = (evt) => {
     if (isEscapeKey(evt)) {
       evt.preventDefault();
-      this.#onCloseDetailsView(this.#movie, this.#comments);
+      this.#movieDetailsComponent.reset(this.#movie);
+      this.#onCloseDetailsView();
     }
   };
 
