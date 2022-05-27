@@ -43,7 +43,6 @@ export default class MovieDetailsView extends AbstractStatefulView {
     const emojiInputItem = evt.target.closest('.film-details__emoji-item');
     if (emojiInputItem) {
       evt.preventDefault();
-      // emojiInputItem.checked = true;
       this.updateElement({
         commentEmoji: emojiInputItem.value,
         scrollTop: this.element.scrollTop

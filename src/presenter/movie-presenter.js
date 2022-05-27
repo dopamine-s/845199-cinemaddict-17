@@ -77,6 +77,8 @@ export default class MoviePresenter {
 
   #onCloseDetailsView = () => {
     remove(this.#movieDetailsComponent);
+    this.#movieDetailsComponent.reset(this.#movie);
+
     document.body.classList.remove('hide-overflow');
     document.removeEventListener('keydown', this.#onEscapeKeyDown);
     this.#mode = Mode.DEFAULT;
@@ -85,7 +87,6 @@ export default class MoviePresenter {
   #onEscapeKeyDown = (evt) => {
     if (isEscapeKey(evt)) {
       evt.preventDefault();
-      this.#movieDetailsComponent.reset(this.#movie);
       this.#onCloseDetailsView();
     }
   };
