@@ -2,16 +2,16 @@ import UserRankView from './view/user-rank-view.js';
 import NavigationMenuView from './view/navigation-menu-view.js';
 import FilmsPresenter from './presenter/films-presenter.js';
 import MoviesAmountView from './view/movies-amount-view.js';
-import MockMoviesModel from './model/mock-movies-model.js';
+import MoviesModel from './model/movies-model.js';
 import { render } from './framework/render.js';
 import { generateFilter } from './view/movie-filter.js';
 
 const siteHeaderElement = document.querySelector('.header');
 const siteMainElement = document.querySelector('.main');
 const siteFooterElement = document.querySelector('.footer');
-const mockMoviesModel = new MockMoviesModel();
-const filmsPresenter = new FilmsPresenter(siteMainElement, mockMoviesModel);
-const movies = mockMoviesModel.mockMoviesData;
+const moviesModel = new MoviesModel();
+const filmsPresenter = new FilmsPresenter(siteMainElement, moviesModel);
+const movies = moviesModel.movies;
 const filters = generateFilter(movies);
 
 render(new UserRankView(), siteHeaderElement);
