@@ -1,6 +1,7 @@
 import MovieCardView from '../view/movie-card-view.js';
 import MovieDetailsView from '../view/movie-details-view.js';
 import { isEscapeKey } from '../utils/utils.js';
+import { UserAction, UpdateType } from '../consts.js';
 import { render, remove, RenderPosition, replace } from '../framework/render.js';
 
 const siteFooterElement = document.querySelector('.footer');
@@ -57,37 +58,37 @@ export default class MoviePresenter {
   resetView = () => {
     if (this.#mode === Mode.DETAILS) {
       this.#movieDetailsComponent.reset(this.#movie);
-      this.#onCloseDetailsView();
+      this.#handleCloseDetailsView();
     }
   };
 
   #setMovieCardHandlers = () => {
-    this.#movieCardComponent.setDetailsClickHandler(this.#onMovieCardClick);
-    this.#movieCardComponent.setWatchlistClickHandler(this.#onWatchlistClick);
-    this.#movieCardComponent.setAlreadyWatchedClickHandler(this.#onAlreadyWatchedClick);
-    this.#movieCardComponent.setFavoriteClickHandler(this.#onFavoriteClick);
+    this.#movieCardComponent.setDetailsClickHandler(this.#handleMovieCardClick);
+    this.#movieCardComponent.setWatchlistClickHandler(this.#handleWatchlistClick);
+    this.#movieCardComponent.setAlreadyWatchedClickHandler(this.#handleAlreadyWatchedClick);
+    this.#movieCardComponent.setFavoriteClickHandler(this.#handleFavoriteClick);
   };
 
   #setMovieDetailsHandlers = () => {
-    this.#movieDetailsComponent.setCloseDetailsClickHandler(this.#onCloseDetailsView);
-    this.#movieDetailsComponent.setWatchlistClickHandler(this.#onWatchlistClick);
-    this.#movieDetailsComponent.setAlreadyWatchedClickHandler(this.#onAlreadyWatchedClick);
-    this.#movieDetailsComponent.setFavoriteClickHandler(this.#onFavoriteClick);
+    this.#movieDetailsComponent.setCloseDetailsClickHandler(this.#handleCloseDetailsView);
+    this.#movieDetailsComponent.setWatchlistClickHandler(this.#handleWatchlistClick);
+    this.#movieDetailsComponent.setAlreadyWatchedClickHandler(this.#handleAlreadyWatchedClick);
+    this.#movieDetailsComponent.setFavoriteClickHandler(this.#handleFavoriteClick);
   };
 
-  #onCloseDetailsView = () => {
+  #handleCloseDetailsView = () => {
     remove(this.#movieDetailsComponent);
     this.#movieDetailsComponent.reset(this.#movie);
 
     document.body.classList.remove('hide-overflow');
-    document.removeEventListener('keydown', this.#onEscapeKeyDown);
+    document.removeEventListener('keydown', this.#handleEscapeKeyDown);
     this.#mode = Mode.DEFAULT;
   };
 
-  #onEscapeKeyDown = (evt) => {
+  #handleEscapeKeyDown = (evt) => {
     if (isEscapeKey(evt)) {
       evt.preventDefault();
-      this.#onCloseDetailsView();
+      this.#handleCloseDetailsView();
     }
   };
 
@@ -96,27 +97,36 @@ export default class MoviePresenter {
     this.#setMovieDetailsHandlers();
   };
 
-  #onMovieCardClick = () => {
+  #handleMovieCardClick = () => {
     this.#changeMode();
     this.#renderMovieDetails();
     this.#mode = Mode.DETAILS;
 
     document.body.classList.add('hide-overflow');
-    document.addEventListener('keydown', this.#onEscapeKeyDown);
+    document.addEventListener('keydown', this.#handleEscapeKeyDown);
   };
 
-  #onWatchlistClick = () => {
-    this.#movie.userDetails.watchlist = !this.#movie.userDetails.watchlist;
-    this.#changeMovie({ ...this.#movie }, [...this.#comments]);
+  #handleWatchlistClick = () => {
+    this.#changeMovie(
+      UserAction.UPDATE_MOVIE,
+      UpdateType.MINOR,
+      { ...this.#movie, userDetails: { ...this.#movie.userDetails, watchlist: !this.#movie.userDetails.watchlist, } },
+      [...this.#comments]);
   };
 
-  #onAlreadyWatchedClick = () => {
-    this.#movie.userDetails.alreadyWatched = !this.#movie.userDetails.alreadyWatched;
-    this.#changeMovie({ ...this.#movie }, [...this.#comments]);
+  #handleAlreadyWatchedClick = () => {
+    this.#changeMovie(
+      UserAction.UPDATE_MOVIE,
+      UpdateType.MINOR,
+      { ...this.#movie, userDetails: { ...this.#movie.userDetails, alreadyWatched: !this.#movie.userDetails.alreadyWatched, } },
+      [...this.#comments]);
   };
 
-  #onFavoriteClick = () => {
-    this.#movie.userDetails.favorite = !this.#movie.userDetails.favorite;
-    this.#changeMovie({ ...this.#movie }, [...this.#comments]);
+  #handleFavoriteClick = () => {
+    this.#changeMovie(
+      UserAction.UPDATE_MOVIE,
+      UpdateType.MINOR,
+      { ...this.#movie, userDetails: {...this.#movie.userDetails, favorite: !this.#movie.userDetails.favorite,} },
+      [...this.#comments]);
   };
 }

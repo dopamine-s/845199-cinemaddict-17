@@ -32,6 +32,8 @@ export default class FilmsPresenter {
   constructor(filmsContainer, moviesModel) {
     this.#filmsContainer = filmsContainer;
     this.#moviesModel = moviesModel;
+
+    this.#moviesModel.addObserver(this.#handleModelEvent);
   }
 
   get movies() {
@@ -55,10 +57,10 @@ export default class FilmsPresenter {
 
   #renderShowMoreButton = () => {
     render(this.#showMoreButtonComponent, this.#filmsListComponent.element);
-    this.#showMoreButtonComponent.setClickHandler(this.#onShowMoreButtonComponentClick);
+    this.#showMoreButtonComponent.setClickHandler(this.#handleShowMoreButtonComponentClick);
   };
 
-  #onShowMoreButtonComponentClick = () => {
+  #handleShowMoreButtonComponentClick = () => {
     const moviesCount = this.movies.length;
     const newRenderedMoviesCount = Math.min(moviesCount, this.#renderedMoviesCount + MOVIES_PER_STEP);
     const movies = this.movies.slice(this.#renderedMoviesCount, newRenderedMoviesCount);
@@ -71,11 +73,27 @@ export default class FilmsPresenter {
     }
   };
 
-  #onMovieChange = (updatedMovie, updatedComments) => {
-    this.#moviePresenter.get(updatedMovie.id).init(updatedMovie, updatedComments);
+  // #onMovieChange = (updatedMovie, updatedComments) => {
+  //   this.#moviePresenter.get(updatedMovie.id).init(updatedMovie, updatedComments);
+  // };
+
+  #handleViewAction = (actionType, updateType, update) => {
+    console.log(actionType, updateType, update);
+    // Здесь будем вызывать обновление модели.
+    // actionType - действие пользователя, нужно чтобы понять, какой метод модели вызвать
+    // updateType - тип изменений, нужно чтобы понять, что после нужно обновить
+    // update - обновленные данные
   };
 
-  #onSortTypeChange = (sortType) => {
+  #handleModelEvent = (updateType, data) => {
+    console.log(updateType, data);
+    // В зависимости от типа изменений решаем, что делать:
+    // - обновить часть списка (например, когда поменялось описание)
+    // - обновить список (например, когда задача ушла в архив)
+    // - обновить всю доску (например, при переключении фильтра)
+  };
+
+  #handleSortTypeChange = (sortType) => {
     if (this.#currentSortType === sortType) {
       return;
     }
@@ -85,13 +103,13 @@ export default class FilmsPresenter {
     this.#renderMoviesList();
   };
 
-  #onModeChange = () => {
+  #handleModeChange = () => {
     this.#moviePresenter.forEach((presenter) => presenter.resetView());
   };
 
 
   #renderMovie = (movie, comments, container) => {
-    const moviePresenter = new MoviePresenter(container, this.#onMovieChange, this.#onModeChange);
+    const moviePresenter = new MoviePresenter(container, this.#handleViewAction, this.#handleModeChange);
     moviePresenter.init(movie, comments);
     this.#moviePresenter.set(movie.id, moviePresenter);
   };
@@ -107,7 +125,7 @@ export default class FilmsPresenter {
 
   #renderSortViewComponent = () => {
     render(this.#sortViewComponent, this.#filmsContainer);
-    this.#sortViewComponent.setSortTypeChangeHandler(this.#onSortTypeChange);
+    this.#sortViewComponent.setSortTypeChangeHandler(this.#handleSortTypeChange);
   };
 
   #renderFilmsSectionComponent = () => {
