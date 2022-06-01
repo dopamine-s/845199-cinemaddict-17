@@ -1,7 +1,7 @@
 import Observable from '../framework/observable.js';
 import { generateMockMovieData, generateMockComments } from '../mock/mock-movie-data.js';
 
-const MOCK_MOVIES_AMMOUNT =30;
+const MOCK_MOVIES_AMMOUNT = 30;
 export const MAX_COMMENTS = 20;
 
 export default class MoviesModel extends Observable {
