@@ -75,10 +75,16 @@ export default class MovieDetailsView extends AbstractStatefulView {
   };
 
   #setOuterHandlers = () => {
+    this.setDeleteCommentClickHandler(this._callback.deleteCommentClick);
     this.setCloseDetailsClickHandler(this._callback.closeDetailsClick);
     this.setWatchlistClickHandler(this._callback.watchlistClick);
     this.setAlreadyWatchedClickHandler(this._callback.alreadyWatchedClick);
     this.setFavoriteClickHandler(this._callback.favoriteClick);
+  };
+
+  setDeleteCommentClickHandler = (callback) => {
+    this._callback.deleteCommentClick = callback;
+    this.element.querySelectorAll('.film-details__comment-delete').forEach((element) => element.addEventListener('click', this.#deleteCommentClickHandler));
   };
 
   setCloseDetailsClickHandler = (callback) => {
@@ -99,6 +105,11 @@ export default class MovieDetailsView extends AbstractStatefulView {
   setFavoriteClickHandler = (callback) => {
     this._callback.favoriteClick = callback;
     this.element.querySelector('.film-details__control-button--favorite').addEventListener('click', this.#favoriteClickHandler);
+  };
+
+  #deleteCommentClickHandler = (evt) => {
+    evt.preventDefault();
+    this._callback.deleteCommentClick(evt.target.closest('.film-details__comment').id);
   };
 
   #closeDetailsClickHandler = (evt) => {

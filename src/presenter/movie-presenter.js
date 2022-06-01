@@ -12,6 +12,7 @@ const Mode = {
 
 export default class MoviePresenter {
   #movieContainer = null;
+  #moviesModel = null;
   #changeMovie = null;
   #changeMode = null;
   #movieCardComponent = null;
@@ -20,8 +21,9 @@ export default class MoviePresenter {
   #comments = null;
   #mode = Mode.DEFAULT;
 
-  constructor(movieContainer, changeMovie, changeMode) {
+  constructor(movieContainer, moviesModel, changeMovie, changeMode) {
     this.#movieContainer = movieContainer;
+    this.#moviesModel = moviesModel;
     this.#changeMovie = changeMovie;
     this.#changeMode = changeMode;
   }
@@ -70,6 +72,7 @@ export default class MoviePresenter {
   };
 
   #setMovieDetailsHandlers = () => {
+    this.#movieDetailsComponent.setDeleteCommentClickHandler(this.#handleDeleteCommentClick);
     this.#movieDetailsComponent.setCloseDetailsClickHandler(this.#handleCloseDetailsView);
     this.#movieDetailsComponent.setWatchlistClickHandler(this.#handleWatchlistClick);
     this.#movieDetailsComponent.setAlreadyWatchedClickHandler(this.#handleAlreadyWatchedClick);
@@ -104,6 +107,20 @@ export default class MoviePresenter {
 
     document.body.classList.add('hide-overflow');
     document.addEventListener('keydown', this.#handleEscapeKeyDown);
+  };
+
+  #handleDeleteCommentClick = (commentId) => {
+    // console.log(comment);
+    this.#moviesModel.deleteComment(
+      UpdateType.MINOR,
+      commentId
+    );
+
+    this.#changeMovie(
+      UserAction.DELETE_COMMENT,
+      UpdateType.MINOR,
+      { ...this.#movie, comments: this.#movie.comments.filter((movieCommentId) => movieCommentId !== commentId), }, [...this.#comments]
+    );
   };
 
   #handleWatchlistClick = () => {

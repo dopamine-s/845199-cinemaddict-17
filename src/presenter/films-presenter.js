@@ -132,7 +132,7 @@ export default class FilmsPresenter {
 
 
   #renderMovie = (movie, comments, container) => {
-    const moviePresenter = new MoviePresenter(container, this.#handleViewAction, this.#handleModeChange);
+    const moviePresenter = new MoviePresenter(container, this.#moviesModel, this.#handleViewAction, this.#handleModeChange);
     moviePresenter.init(movie, comments);
     this.#moviePresenter.set(movie.id, moviePresenter);
   };
@@ -191,9 +191,9 @@ export default class FilmsPresenter {
     remove(this.#sortViewComponent);
     remove(this.#filmsSectionComponent);
     remove(this.#filmsListComponent);
+    remove(this.#filmsContainerComponent);
     remove(this.#filmsTopRatedComponent);
     remove(this.#filmsMostCommentedComponent);
-    remove(this.#filmsContainerComponent);
 
     remove(this.#showMoreButtonComponent);
 
