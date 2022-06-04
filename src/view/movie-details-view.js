@@ -2,10 +2,13 @@ import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
 import { createMovieDetailsTemplate } from '../templates/movie-details-template.js';
 
 export default class MovieDetailsView extends AbstractStatefulView {
-  constructor(movie) {
+  #renderComments = null;
+
+  constructor(movie, renderComments) {
     super();
     this._state = MovieDetailsView.convertMovieToState(movie);
     this.#setInnerHandlers();
+    this.#renderComments = renderComments;
   }
 
   get template() {
@@ -97,6 +100,7 @@ export default class MovieDetailsView extends AbstractStatefulView {
         scrollTop: this.element.scrollTop
       });
     }
+    this.#renderComments();
     this.#restorePosition();
   };
 

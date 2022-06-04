@@ -36,7 +36,7 @@ export default class MoviePresenter {
     const prevMovieDetailsComponent = this.#movieDetailsComponent;
 
     this.#movieCardComponent = new MovieCardView(movie);
-    this.#movieDetailsComponent = new MovieDetailsView(movie);
+    this.#movieDetailsComponent = new MovieDetailsView(movie, this.#renderComments);
 
     this.#setMovieCardHandlers();
     this.#setMovieDetailsHandlers();
@@ -56,7 +56,7 @@ export default class MoviePresenter {
 
     remove(prevMovieCardComponent);
     remove(prevMovieDetailsComponent);
-    this.#renderComments(this.#movie.comments);
+    this.#renderComments();
   };
 
   destroy = () => {
@@ -70,11 +70,11 @@ export default class MoviePresenter {
   }
 
 
-  #renderComments(comments) {
-    comments.forEach(
+  #renderComments = () => {
+    this.#movie.comments.forEach(
       (commentId) => this.#renderComment(this.#commentsModel.getComment(commentId))
     );
-  }
+  };
 
   #destroyComments() {
     this.#commentPresenter.forEach((presenter) => presenter.destroy());
@@ -125,7 +125,7 @@ export default class MoviePresenter {
   #handleMovieCardClick = () => {
     this.#changeMode();
     this.#addMovieDetails();
-    this.#renderComments(this.#movie.comments);
+    this.#renderComments();
     this.#mode = Mode.DETAILS;
 
     document.body.classList.add('hide-overflow');
@@ -135,21 +135,21 @@ export default class MoviePresenter {
   #handleWatchlistClick = () => {
     this.#changeMovie(
       USER_ACTION.UPDATE,
-      UPDATE_TYPE.MINOR,
+      UPDATE_TYPE.PATCH,
       { ...this.#movie, userDetails: { ...this.#movie.userDetails, watchlist: !this.#movie.userDetails.watchlist, } });
   };
 
   #handleAlreadyWatchedClick = () => {
     this.#changeMovie(
       USER_ACTION.UPDATE,
-      UPDATE_TYPE.MINOR,
+      UPDATE_TYPE.PATCH,
       { ...this.#movie, userDetails: { ...this.#movie.userDetails, alreadyWatched: !this.#movie.userDetails.alreadyWatched, } });
   };
 
   #handleFavoriteClick = () => {
     this.#changeMovie(
       USER_ACTION.UPDATE,
-      UPDATE_TYPE.MINOR,
+      UPDATE_TYPE.PATCH,
       { ...this.#movie, userDetails: {...this.#movie.userDetails, favorite: !this.#movie.userDetails.favorite,} });
   };
 }

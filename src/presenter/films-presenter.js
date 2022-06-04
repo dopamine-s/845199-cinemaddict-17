@@ -19,7 +19,7 @@ export default class FilmsPresenter {
   #sortViewComponent = null;
   #showMoreButtonComponent = null;
   #renderedMoviesCount = MOVIES_PER_STEP;
-  #moviePresenter = new Map();
+  #moviePresenters = new Map();
   #currentSortType = SortType.DEFAULT;
 
   #filmsSectionComponent = new FilmsSectionView();
@@ -84,10 +84,10 @@ export default class FilmsPresenter {
     }
   };
 
-  #handleModelEvent = (updateType, data) => {
+  #handleModelEvent = (updateType, movie) => {
     switch (updateType) {
       case UPDATE_TYPE.PATCH:
-        this.#moviePresenter.get(data.id).init(data);
+        this.#moviePresenters.get(movie.id).init(movie);
         break;
       case UPDATE_TYPE.MINOR:
         this.#clearFilms();
@@ -111,19 +111,17 @@ export default class FilmsPresenter {
   };
 
   #handleModeChange = () => {
-    this.#moviePresenter.forEach((presenter) => presenter.resetView());
+    this.#moviePresenters.forEach((presenter) => presenter.resetView());
   };
 
 
   #renderMovie = (movie) => {
     const moviePresenter = new MoviePresenter(this.#filmsContainerComponent.element, this.#handleViewAction, this.#handleModeChange, this.#commentsModel);
     moviePresenter.init(movie);
-    this.#moviePresenter.set(movie.id, moviePresenter);
+    this.#moviePresenters.set(movie.id, moviePresenter);
   };
 
   #renderMovies = (movies) => {
-    // const allComments = this.comments;
-    // movies.forEach((movie) => this.#renderMovie(movie, getCommentsByIds(allComments, movie.comments), this.#filmsContainerComponent.element));
     movies.forEach((movie) => this.#renderMovie(movie));
   };
 
@@ -153,8 +151,8 @@ export default class FilmsPresenter {
   #clearFilms = ({ resetRenderedMoviesCount = false, resetSortType = false } = {}) => {
     const moviesCount = this.movies.length;
 
-    this.#moviePresenter.forEach((presenter) => presenter.destroy());
-    this.#moviePresenter.clear();
+    this.#moviePresenters.forEach((presenter) => presenter.destroy());
+    this.#moviePresenters.clear();
 
     remove(this.#sortViewComponent);
     // remove(this.#filmsSectionComponent);
