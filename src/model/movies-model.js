@@ -1,19 +1,13 @@
 import Observable from '../framework/observable.js';
-import { generateMockMovieData, generateMockComments } from '../mock/mock-movie-data.js';
+import { generateMockMovieData } from '../mock/mock-movie-data.js';
 
 const MOCK_MOVIES_AMMOUNT = 30;
-export const MAX_COMMENTS = 20;
 
 export default class MoviesModel extends Observable {
   #movies = Array.from({ length: MOCK_MOVIES_AMMOUNT }, generateMockMovieData);
-  #comments = generateMockComments(MAX_COMMENTS);
 
   get movies() {
     return this.#movies;
-  }
-
-  get comments() {
-    return this.#comments;
   }
 
   updateMovie = (updateType, update) => {
@@ -32,20 +26,27 @@ export default class MoviesModel extends Observable {
     this._notify(updateType, update);
   };
 
-  addComment = (updateType, update) => {
-    this.#comments = [
+  addMovie = (updateType, update) => {
+    this.#movies = [
       update,
-      ...this.comments,
+      ...this.#movies,
     ];
 
     this._notify(updateType, update);
   };
 
-  deleteComment = (updateType, id) => {
-    this.#comments = this.#comments.filter((comment) => comment.id !== id);
+  deleteMovie = (updateType, update) => {
+    const index = this.#movies.findIndex((movie) => movie.id === update.id);
 
-    this._notify(updateType, id);
+    if (index === -1) {
+      throw new Error('Can\'t delete unexisting movie');
+    }
+
+    this.#movies = [
+      ...this.#movies.slice(0, index),
+      ...this.#movies.slice(index + 1),
+    ];
+
+    this._notify(updateType);
   };
 }
-
-

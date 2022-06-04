@@ -1,3 +1,5 @@
+export const MOVIES_PER_STEP = 5;
+
 export const FilterType = {
   ALL: 'All movies',
   WATCH_LIST: 'Watchlist',
@@ -11,13 +13,20 @@ export const SortType = {
   RATING: 'rating',
 };
 
-export const UserAction = {
-  UPDATE_MOVIE: 'UPDATE_MOVIE',
-  ADD_COMMENT: 'ADD_COMMENT',
-  DELETE_COMMENT: 'DELETE_COMMENT',
+export const EMOJIS = [
+  'smile',
+  'sleeping',
+  'puke',
+  'angry',
+];
+
+export const USER_ACTION = {
+  UPDATE: 'UPDATE',
+  ADD: 'ADD',
+  DELETE: 'DELETE',
 };
 
-export const UpdateType = {
+export const UPDATE_TYPE = {
   PATCH: 'PATCH',
   MINOR: 'MINOR',
   MAJOR: 'MAJOR',

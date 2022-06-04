@@ -1,19 +1,7 @@
-import { createCommentTemplate } from './comment-template.js';
 import { humanizeDayDate, getTimeFromMins } from '../utils/utils.js';
+import { EMOJIS } from '../consts';
 
-const createAllComments = (movieComments) => {
-  let commentsList = '';
-
-  for (const comment of movieComments) {
-    if (comment) {
-      commentsList = commentsList + createCommentTemplate(comment);
-    }
-  }
-
-  return commentsList;
-};
-
-export const createMovieDetailsTemplate = (movie, movieComments) => {
+export const createMovieDetailsTemplate = (movie) => {
   const {
     comments,
     filmInfo: {
@@ -37,12 +25,22 @@ export const createMovieDetailsTemplate = (movie, movieComments) => {
       watchlist,
       alreadyWatched,
       favorite,
-    }
+    },
+    checkedEmoji
   } = movie;
 
-  const commentEmojiTemplate = movie.commentEmoji ?
-    `<img src="images/emoji/${movie.commentEmoji}.png" width="55" height="55" alt="emoji-${movie.commentEmoji}}"></img>`
-    : '';
+  const getEmojisHtml = () => {
+    const EmojisHtml = [];
+    EMOJIS.forEach((item) => {
+      EmojisHtml.push(
+        `<input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-${item}" value="${item}" ${checkedEmoji === item ? 'checked' : ''}>
+          <label class="film-details__emoji-label" for="emoji-${item}">
+            <img src="./images/emoji/${item}.png" width="30" height="30" alt="emoji">
+          </label>`
+      );
+    });
+    return EmojisHtml;
+  };
 
   const isWatchlistActive = watchlist ? 'film-details__control-button--active' : '';
   const isAlreadyWatchedActive = alreadyWatched ? 'film-details__control-button--active' : '';
@@ -130,37 +128,17 @@ export const createMovieDetailsTemplate = (movie, movieComments) => {
         <section class="film-details__comments-wrap">
           <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">${comments.length}</span></h3>
 
-          <ul class="film-details__comments-list">
-          ${createAllComments(movieComments)}
-          </ul>
+          <ul class="film-details__comments-list"></ul>
 
           <div class="film-details__new-comment">
-            <div class="film-details__add-emoji-label">${commentEmojiTemplate}</div>
+            <div class="film-details__add-emoji-label">${checkedEmoji ? `<img src="./images/emoji/${checkedEmoji}.png" width="70" height="70" alt="${checkedEmoji}">` : ''}</div>
 
             <label class="film-details__comment-label">
               <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment">${movie.commentText ? movie.commentText : ''}</textarea>
             </label>
 
             <div class="film-details__emoji-list">
-              <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-smile" value="smile" ${movie.commentEmoji === 'smile' ? 'checked' : ''}>
-              <label class="film-details__emoji-label" for="emoji-smile">
-                <img src="./images/emoji/smile.png" width="30" height="30" alt="emoji">
-              </label>
-
-              <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-sleeping" value="sleeping" ${movie.commentEmoji === 'sleeping' ? 'checked' : ''}>
-              <label class="film-details__emoji-label" for="emoji-sleeping">
-                <img src="./images/emoji/sleeping.png" width="30" height="30" alt="emoji">
-              </label>
-
-              <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-puke" value="puke" ${movie.commentEmoji === 'puke' ? 'checked' : ''}>
-              <label class="film-details__emoji-label" for="emoji-puke">
-                <img src="./images/emoji/puke.png" width="30" height="30" alt="emoji">
-              </label>
-
-              <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-angry" value="angry"  ${movie.commentEmoji === 'angry' ? 'checked' : ''}>
-              <label class="film-details__emoji-label" for="emoji-angry">
-                <img src="./images/emoji/angry.png" width="30" height="30" alt="emoji">
-              </label>
+              ${getEmojisHtml().join('')}
             </div>
           </div>
         </section>

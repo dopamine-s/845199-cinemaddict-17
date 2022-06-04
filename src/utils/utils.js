@@ -42,15 +42,6 @@ export const adaptCommentDate = (data) => {
 
 export const getTimeFromMins = (timeInMinutes) => dayjs.duration(timeInMinutes, 'minutes').format('H[h] m[min]');
 
-export const getCommentsByIds = (allComments, singleMovieComments) => {
-  const resultComments = [];
-  for (const singleMovieComment of singleMovieComments) {
-    resultComments.push(allComments.find((comment) => comment.id === singleMovieComment));
-  }
-
-  return resultComments;
-};
-
 export const isEscapeKey = (evt) => evt.key === 'Escape' || evt.key === 'Esc';
 
 // Функция помещает задачи без даты в конце списка,

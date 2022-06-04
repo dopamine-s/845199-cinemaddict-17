@@ -1,8 +1,9 @@
 import MovieCardView from '../view/movie-card-view.js';
 import MovieDetailsView from '../view/movie-details-view.js';
 import { isEscapeKey } from '../utils/utils.js';
-import { UserAction, UpdateType } from '../consts.js';
-import { render, remove, RenderPosition, replace } from '../framework/render.js';
+import { USER_ACTION, UPDATE_TYPE } from '../consts.js';
+import { render, remove, replace, RenderPosition } from '../framework/render.js';
+import CommentPresenter from './comment-presenter.js';
 
 const siteFooterElement = document.querySelector('.footer');
 const Mode = {
@@ -12,30 +13,30 @@ const Mode = {
 
 export default class MoviePresenter {
   #movieContainer = null;
-  #moviesModel = null;
   #changeMovie = null;
   #changeMode = null;
+  #commentsModel = null;
   #movieCardComponent = null;
   #movieDetailsComponent = null;
   #movie = null;
-  #comments = null;
   #mode = Mode.DEFAULT;
 
-  constructor(movieContainer, moviesModel, changeMovie, changeMode) {
+  #commentPresenter = new Map();
+
+  constructor(movieContainer, changeMovie, changeMode, commentsModel) {
     this.#movieContainer = movieContainer;
-    this.#moviesModel = moviesModel;
     this.#changeMovie = changeMovie;
     this.#changeMode = changeMode;
+    this.#commentsModel = commentsModel;
   }
 
-  init = (movie, comments) => {
+  init = (movie) => {
     this.#movie = movie;
-    this.#comments = comments;
     const prevMovieCardComponent = this.#movieCardComponent;
     const prevMovieDetailsComponent = this.#movieDetailsComponent;
 
-    this.#movieCardComponent = new MovieCardView(this.#movie, this.#comments);
-    this.#movieDetailsComponent = new MovieDetailsView(this.#movie, this.#comments);
+    this.#movieCardComponent = new MovieCardView(movie);
+    this.#movieDetailsComponent = new MovieDetailsView(movie);
 
     this.#setMovieCardHandlers();
     this.#setMovieDetailsHandlers();
@@ -45,11 +46,17 @@ export default class MoviePresenter {
       return;
     }
 
-    replace(this.#movieCardComponent, prevMovieCardComponent);
-    replace(this.#movieDetailsComponent, prevMovieDetailsComponent);
+    if (this.#movieContainer.contains(prevMovieCardComponent.element)) {
+      replace(this.#movieCardComponent, prevMovieCardComponent);
+    }
+
+    if (document.contains(prevMovieDetailsComponent.element)) {
+      replace(this.#movieDetailsComponent, prevMovieDetailsComponent);
+    }
 
     remove(prevMovieCardComponent);
     remove(prevMovieDetailsComponent);
+    this.#renderComments(this.#movie.comments);
   };
 
   destroy = () => {
@@ -57,9 +64,25 @@ export default class MoviePresenter {
     remove(this.#movieDetailsComponent);
   };
 
+  #renderComment(comment) {
+    const commentPresenter = new CommentPresenter(this.#movieDetailsComponent.element.querySelector('.film-details__comments-list'), this.#changeMovie);
+    commentPresenter.init(comment, this.#movie);
+  }
+
+
+  #renderComments(comments) {
+    comments.forEach(
+      (commentId) => this.#renderComment(this.#commentsModel.getComment(commentId))
+    );
+  }
+
+  #destroyComments() {
+    this.#commentPresenter.forEach((presenter) => presenter.destroy());
+  }
+
   resetView = () => {
     if (this.#mode === Mode.DETAILS) {
-      this.#movieDetailsComponent.reset(this.#movie);
+      // this.#movieDetailsComponent.reset(this.#movie);
       this.#handleCloseDetailsView();
     }
   };
@@ -72,7 +95,6 @@ export default class MoviePresenter {
   };
 
   #setMovieDetailsHandlers = () => {
-    this.#movieDetailsComponent.setDeleteCommentClickHandler(this.#handleDeleteCommentClick);
     this.#movieDetailsComponent.setCloseDetailsClickHandler(this.#handleCloseDetailsView);
     this.#movieDetailsComponent.setWatchlistClickHandler(this.#handleWatchlistClick);
     this.#movieDetailsComponent.setAlreadyWatchedClickHandler(this.#handleAlreadyWatchedClick);
@@ -80,6 +102,7 @@ export default class MoviePresenter {
   };
 
   #handleCloseDetailsView = () => {
+    this.#destroyComments();
     remove(this.#movieDetailsComponent);
     this.#movieDetailsComponent.reset(this.#movie);
 
@@ -95,55 +118,38 @@ export default class MoviePresenter {
     }
   };
 
-  #renderMovieDetails = () => {
+  #addMovieDetails = () => {
     render(this.#movieDetailsComponent, siteFooterElement, RenderPosition.AFTEREND);
-    this.#setMovieDetailsHandlers();
   };
 
   #handleMovieCardClick = () => {
     this.#changeMode();
-    this.#renderMovieDetails();
+    this.#addMovieDetails();
+    this.#renderComments(this.#movie.comments);
     this.#mode = Mode.DETAILS;
 
     document.body.classList.add('hide-overflow');
     document.addEventListener('keydown', this.#handleEscapeKeyDown);
   };
 
-  #handleDeleteCommentClick = (commentId) => {
-    // console.log(comment);
-    this.#moviesModel.deleteComment(
-      UpdateType.MINOR,
-      commentId
-    );
-
-    this.#changeMovie(
-      UserAction.DELETE_COMMENT,
-      UpdateType.MINOR,
-      { ...this.#movie, comments: this.#movie.comments.filter((movieCommentId) => movieCommentId !== commentId), }, [...this.#comments]
-    );
-  };
-
   #handleWatchlistClick = () => {
     this.#changeMovie(
-      UserAction.UPDATE_MOVIE,
-      UpdateType.MINOR,
-      { ...this.#movie, userDetails: { ...this.#movie.userDetails, watchlist: !this.#movie.userDetails.watchlist, } },
-      [...this.#comments]);
+      USER_ACTION.UPDATE,
+      UPDATE_TYPE.MINOR,
+      { ...this.#movie, userDetails: { ...this.#movie.userDetails, watchlist: !this.#movie.userDetails.watchlist, } });
   };
 
   #handleAlreadyWatchedClick = () => {
     this.#changeMovie(
-      UserAction.UPDATE_MOVIE,
-      UpdateType.MINOR,
-      { ...this.#movie, userDetails: { ...this.#movie.userDetails, alreadyWatched: !this.#movie.userDetails.alreadyWatched, } },
-      [...this.#comments]);
+      USER_ACTION.UPDATE,
+      UPDATE_TYPE.MINOR,
+      { ...this.#movie, userDetails: { ...this.#movie.userDetails, alreadyWatched: !this.#movie.userDetails.alreadyWatched, } });
   };
 
   #handleFavoriteClick = () => {
     this.#changeMovie(
-      UserAction.UPDATE_MOVIE,
-      UpdateType.MINOR,
-      { ...this.#movie, userDetails: {...this.#movie.userDetails, favorite: !this.#movie.userDetails.favorite,} },
-      [...this.#comments]);
+      USER_ACTION.UPDATE,
+      UPDATE_TYPE.MINOR,
+      { ...this.#movie, userDetails: {...this.#movie.userDetails, favorite: !this.#movie.userDetails.favorite,} });
   };
 }
