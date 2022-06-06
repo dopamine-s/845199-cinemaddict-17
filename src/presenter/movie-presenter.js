@@ -36,7 +36,7 @@ export default class MoviePresenter {
     const prevMovieDetailsComponent = this.#movieDetailsComponent;
 
     this.#movieCardComponent = new MovieCardView(movie);
-    this.#movieDetailsComponent = new MovieDetailsView(movie, this.#renderComments);
+    this.#movieDetailsComponent = new MovieDetailsView(movie, this.#renderComments, this.#getCommentsLength);
 
     this.#setMovieCardHandlers();
     this.#setMovieDetailsHandlers();
@@ -76,6 +76,8 @@ export default class MoviePresenter {
     );
   };
 
+  #getCommentsLength = () => this.#commentsModel.comments.length;
+
   #destroyComments() {
     this.#commentPresenter.forEach((presenter) => presenter.destroy());
   }
@@ -99,6 +101,7 @@ export default class MoviePresenter {
     this.#movieDetailsComponent.setWatchlistClickHandler(this.#handleWatchlistClick);
     this.#movieDetailsComponent.setAlreadyWatchedClickHandler(this.#handleAlreadyWatchedClick);
     this.#movieDetailsComponent.setFavoriteClickHandler(this.#handleFavoriteClick);
+    this.#movieDetailsComponent.setCommentAddHandler(this.#handleCommentAdd);
   };
 
   #handleCloseDetailsView = () => {
@@ -151,5 +154,16 @@ export default class MoviePresenter {
       USER_ACTION.UPDATE,
       UPDATE_TYPE.PATCH,
       { ...this.#movie, userDetails: {...this.#movie.userDetails, favorite: !this.#movie.userDetails.favorite,} });
+  };
+
+  #handleCommentAdd = (update) => {
+    this.#commentsModel.addComment(
+      UPDATE_TYPE.PATCH,
+      update
+    );
+
+    this.#changeMovie(USER_ACTION.UPDATE,
+      UPDATE_TYPE.PATCH,
+      {...this.#movie,  comments: [...this.#movie.comments, update.id]});
   };
 }

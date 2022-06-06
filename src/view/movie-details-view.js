@@ -1,14 +1,17 @@
 import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
 import { createMovieDetailsTemplate } from '../templates/movie-details-template.js';
+import { generateDate } from '../utils/utils.js';
 
 export default class MovieDetailsView extends AbstractStatefulView {
   #renderComments = null;
+  #getCommentsLength = null;
 
-  constructor(movie, renderComments) {
+  constructor(movie, renderComments, getCommentsLength) {
     super();
     this._state = MovieDetailsView.convertMovieToState(movie);
     this.#setInnerHandlers();
     this.#renderComments = renderComments;
+    this.#getCommentsLength = getCommentsLength;
   }
 
   get template() {
@@ -57,6 +60,7 @@ export default class MovieDetailsView extends AbstractStatefulView {
     this.setWatchlistClickHandler(this._callback.watchlistClick);
     this.setAlreadyWatchedClickHandler(this._callback.alreadyWatchedClick);
     this.setFavoriteClickHandler(this._callback.favoriteClick);
+    this.setCommentAddHandler(this._callback.commentAdd);
   };
 
   setEmojiChangeHandler = (callback) => {
@@ -89,6 +93,11 @@ export default class MovieDetailsView extends AbstractStatefulView {
   setFavoriteClickHandler = (callback) => {
     this._callback.favoriteClick = callback;
     this.element.querySelector('.film-details__control-button--favorite').addEventListener('click', this.#favoriteClickHandler);
+  };
+
+  setCommentAddHandler = (callback) => {
+    this._callback.commentAdd = callback;
+    this.element.querySelector('.film-details__comment-input').addEventListener('keydown', this.#commentAddHandler);
   };
 
   #emojiChangeHandler = (evt) => {
@@ -131,5 +140,17 @@ export default class MovieDetailsView extends AbstractStatefulView {
   #favoriteClickHandler = (evt) => {
     evt.preventDefault();
     this._callback.favoriteClick();
+  };
+
+  #commentAddHandler = (evt) => {
+    if ((evt.ctrlKey || evt.metaKey) && evt.keyCode === 13 && this._state.checkedEmoji) {
+      this._callback.commentAdd({
+        id: this.#getCommentsLength() + 1,
+        author: 'This User',
+        comment: this._state.commentText ? this._state.commentText : '',
+        commentDate: generateDate(),
+        emotion: this._state.checkedEmoji,
+      });
+    }
   };
 }
