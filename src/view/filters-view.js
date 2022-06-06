@@ -1,7 +1,7 @@
 import AbstractView from '../framework/view/abstract-view.js';
-import { createNavigationMenuTemplate } from '../templates/navigation-menu-template.js';
+import { filtersTemplate } from '../templates/filters-template.js';
 
-export default class NavigationMenuView extends AbstractView {
+export default class FiltersView extends AbstractView {
   #filters = null;
   #currentFilter = null;
   constructor(filters, currentFilterType) {
@@ -11,7 +11,7 @@ export default class NavigationMenuView extends AbstractView {
   }
 
   get template() {
-    return createNavigationMenuTemplate(this.#filters, this.#currentFilter);
+    return filtersTemplate(this.#filters, this.#currentFilter);
   }
 
   setFilterTypeChangeHandler = (callback) => {

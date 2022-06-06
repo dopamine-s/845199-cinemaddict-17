@@ -5,8 +5,8 @@ const createFilterItemTemplate = (filter, currentFilterType) => {
   );
 };
 
-export const createNavigationMenuTemplate = (filterItems) => {
+export const filtersTemplate = (filterItems, currentFilterType) => {
 
-  const filtersTemplate = filterItems.map((filter, index) => createFilterItemTemplate(filter, index === 0)).join('');
-  return `<nav class="main-navigation"> ${filtersTemplate}</nav>`;
+  const filterItemsTemplate = filterItems.map((filter) => createFilterItemTemplate(filter, currentFilterType)).join('');
+  return `<nav class="main-navigation"> ${filterItemsTemplate}</nav>`;
 };

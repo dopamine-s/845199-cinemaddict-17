@@ -2,7 +2,7 @@ export const MOVIES_PER_STEP = 5;
 
 export const FILTER_TYPE = {
   ALL: 'All movies',
-  WATCH_LIST: 'Watchlist',
+  WATCHLIST: 'Watchlist',
   HISTORY: 'History',
   FAVORITES: 'Favorites',
 };
