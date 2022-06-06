@@ -8,7 +8,7 @@ import FilmsMostCommentedView from '../view/films-most-commented-view.js';
 import NoMoviesView from '../view/no-movies-view.js';
 import MoviePresenter from './movie-presenter.js';
 import { sortMovieByDate, sortMovieByRating } from '../utils/utils.js';
-import { MOVIES_PER_STEP, SortType, UPDATE_TYPE, USER_ACTION } from '../consts.js';
+import { MOVIES_PER_STEP, SORT_TYPE, UPDATE_TYPE, USER_ACTION } from '../consts.js';
 import { render, remove, RenderPosition } from '../framework/render.js';
 
 export default class FilmsPresenter {
@@ -20,7 +20,7 @@ export default class FilmsPresenter {
   #showMoreButtonComponent = null;
   #renderedMoviesCount = MOVIES_PER_STEP;
   #moviePresenters = new Map();
-  #currentSortType = SortType.DEFAULT;
+  #currentSortType = SORT_TYPE.DEFAULT;
 
   #filmsSectionComponent = new FilmsSectionView();
   #filmsListComponent = new FilmsListView();
@@ -38,9 +38,9 @@ export default class FilmsPresenter {
 
   get movies() {
     switch (this.#currentSortType) {
-      case SortType.DATE:
+      case SORT_TYPE.DATE:
         return [...this.#moviesModel.movies].sort(sortMovieByDate);
-      case SortType.RATING:
+      case SORT_TYPE.RATING:
         return [...this.#moviesModel.movies].sort(sortMovieByRating);
     }
 
@@ -174,7 +174,7 @@ export default class FilmsPresenter {
     }
 
     if (resetSortType) {
-      this.#currentSortType = SortType.DEFAULT;
+      this.#currentSortType = SORT_TYPE.DEFAULT;
     }
   };
 

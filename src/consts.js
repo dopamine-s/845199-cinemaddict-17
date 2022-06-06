@@ -1,13 +1,13 @@
 export const MOVIES_PER_STEP = 5;
 
-export const FilterType = {
+export const FILTER_TYPE = {
   ALL: 'All movies',
   WATCH_LIST: 'Watchlist',
   HISTORY: 'History',
   FAVORITES: 'Favorites',
 };
 
-export const SortType = {
+export const SORT_TYPE = {
   DEFAULT: 'default',
   DATE: 'date',
   RATING: 'rating',

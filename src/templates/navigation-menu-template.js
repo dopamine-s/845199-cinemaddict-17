@@ -1,9 +1,8 @@
-const createFilterItemTemplate = (filter, isChecked) => {
-  const { name, count } = filter;
-  if (isChecked) {
-    return `<a href="#${name}" class="main-navigation__item main-navigation__item--active">${name}</a>`;
-  }
-  return `<a href="#${name}" class="main-navigation__item">${name}<span class="main-navigation__item-count">${count}</span></a>`;
+const createFilterItemTemplate = (filter, currentFilterType) => {
+  const { type, name, count } = filter;
+  return (
+    `<a href="#${name}" class="main-navigation__item ${type === currentFilterType ? 'main-navigation__item--active' : ''}" data-filter-type="${name}">${name} <span class="main-navigation__item-count">${count}</span></a>`
+  );
 };
 
 export const createNavigationMenuTemplate = (filterItems) => {
