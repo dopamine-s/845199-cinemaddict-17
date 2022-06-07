@@ -8,19 +8,22 @@ import FilmsMostCommentedView from '../view/films-most-commented-view.js';
 import NoMoviesView from '../view/no-movies-view.js';
 import MoviePresenter from './movie-presenter.js';
 import { sortMovieByDate, sortMovieByRating } from '../utils/utils.js';
-import { MOVIES_PER_STEP, SORT_TYPE, UPDATE_TYPE, USER_ACTION } from '../consts.js';
+import { MOVIES_PER_STEP, SORT_TYPE, UPDATE_TYPE, USER_ACTION, FILTER_TYPE } from '../consts.js';
 import { render, remove, RenderPosition } from '../framework/render.js';
+import { filter } from '../utils/filter.js';
 
 export default class FilmsPresenter {
   #filmsContainer = null;
   #moviesModel = null;
   #commentsModel = null;
+  #filtersModel = null;
   #noMoviesComponent = null;
   #sortViewComponent = null;
   #showMoreButtonComponent = null;
   #renderedMoviesCount = MOVIES_PER_STEP;
   #moviePresenters = new Map();
   #currentSortType = SORT_TYPE.DEFAULT;
+  #filterType = FILTER_TYPE.ALL;
 
   #filmsSectionComponent = new FilmsSectionView();
   #filmsListComponent = new FilmsListView();
@@ -28,28 +31,34 @@ export default class FilmsPresenter {
   #filmsTopRatedComponent = new FilmsTopRatedView();
   #filmsMostCommentedComponent = new FilmsMostCommentedView();
 
-  constructor(filmsContainer, moviesModel, commentsModel) {
+  constructor(filmsContainer, moviesModel, commentsModel, filtersModel) {
     this.#filmsContainer = filmsContainer;
     this.#moviesModel = moviesModel;
     this.#commentsModel = commentsModel;
+    this.#filtersModel = filtersModel;
 
     this.#moviesModel.addObserver(this.#handleModelEvent);
+    this.#filtersModel.addObserver(this.#handleModelEvent);
   }
 
   get movies() {
+    this.#filterType = this.#filtersModel.filter;
+    const movies = this.#moviesModel.movies;
+    const filteredMovies = filter[this.#filterType](movies);
+
     switch (this.#currentSortType) {
       case SORT_TYPE.DATE:
-        return [...this.#moviesModel.movies].sort(sortMovieByDate);
+        return filteredMovies.sort(sortMovieByDate);
       case SORT_TYPE.RATING:
-        return [...this.#moviesModel.movies].sort(sortMovieByRating);
+        return filteredMovies.sort(sortMovieByRating);
     }
 
-    return this.#moviesModel.movies;
+    return filteredMovies;
   }
 
-  init = () => {
+  init() {
     this.#renderFilms();
-  };
+  }
 
   #renderShowMoreButton = () => {
     this.#showMoreButtonComponent = new ShowMoreButtonView();
@@ -126,7 +135,7 @@ export default class FilmsPresenter {
   };
 
   #renderNoMoviesComponent = () => {
-    this.#noMoviesComponent = new NoMoviesView();
+    this.#noMoviesComponent = new NoMoviesView(this.#filterType);
     render(this.#noMoviesComponent, this.#filmsContainer);
   };
 

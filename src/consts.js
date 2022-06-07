@@ -31,3 +31,10 @@ export const UPDATE_TYPE = {
   MINOR: 'MINOR',
   MAJOR: 'MAJOR',
 };
+
+export const NO_MOVIES_TEXTS = {
+  [FILTER_TYPE.ALL]: 'There are no movies in our database',
+  [FILTER_TYPE.WATCHLIST]: 'There are no movies in watchlist now',
+  [FILTER_TYPE.HISTORY]: 'There are no already watched movies now',
+  [FILTER_TYPE.FAVORITES]: 'There are no favorites movies now',
+};

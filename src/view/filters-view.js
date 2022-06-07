@@ -1,7 +1,7 @@
-import AbstractView from '../framework/view/abstract-view.js';
+import AbstractStatefulView from '../framework/view/abstract-view.js';
 import { filtersTemplate } from '../templates/filters-template.js';
 
-export default class FiltersView extends AbstractView {
+export default class FiltersView extends AbstractStatefulView {
   #filters = null;
   #currentFilter = null;
   constructor(filters, currentFilterType) {
@@ -16,11 +16,16 @@ export default class FiltersView extends AbstractView {
 
   setFilterTypeChangeHandler = (callback) => {
     this._callback.filterTypeChange = callback;
-    this.element.addEventListener('change', this.#filterTypeChangeHandler);
+    this.element.addEventListener('click', this.#filterTypeChangeHandler);
+    console.log(this.element);
   };
 
   #filterTypeChangeHandler = (evt) => {
     evt.preventDefault();
-    this._callback.filterTypeChange(evt.target.value);
+    this._callback.filterTypeChange(evt.target.dataset.filterType);
+  };
+
+  _restoreHandlers = () => {
+    this.setFilterTypeChangeHandler(this._callback.filterTypeChange);
   };
 }

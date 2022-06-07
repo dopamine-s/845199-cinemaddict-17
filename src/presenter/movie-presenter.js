@@ -30,7 +30,7 @@ export default class MoviePresenter {
     this.#commentsModel = commentsModel;
   }
 
-  init = (movie) => {
+  init(movie) {
     this.#movie = movie;
     const prevMovieCardComponent = this.#movieCardComponent;
     const prevMovieDetailsComponent = this.#movieDetailsComponent;
@@ -57,7 +57,7 @@ export default class MoviePresenter {
     remove(prevMovieCardComponent);
     remove(prevMovieDetailsComponent);
     this.#renderComments();
-  };
+  }
 
   destroy = () => {
     remove(this.#movieCardComponent);
@@ -84,7 +84,6 @@ export default class MoviePresenter {
 
   resetView = () => {
     if (this.#mode === Mode.DETAILS) {
-      // this.#movieDetailsComponent.reset(this.#movie);
       this.#handleCloseDetailsView();
     }
   };
