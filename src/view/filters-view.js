@@ -17,7 +17,6 @@ export default class FiltersView extends AbstractStatefulView {
   setFilterTypeChangeHandler = (callback) => {
     this._callback.filterTypeChange = callback;
     this.element.addEventListener('click', this.#filterTypeChangeHandler);
-    console.log(this.element);
   };
 
   #filterTypeChangeHandler = (evt) => {
