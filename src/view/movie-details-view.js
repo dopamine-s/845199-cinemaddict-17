@@ -1,19 +1,21 @@
 import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
 import { createMovieDetailsTemplate } from '../templates/movie-details-template.js';
+import { generateDate } from '../utils/utils.js';
 
 export default class MovieDetailsView extends AbstractStatefulView {
-  #movieComments = null;
+  #renderComments = null;
+  #getCommentsLength = null;
 
-  constructor(movie, movieComments) {
+  constructor(movie, renderComments, getCommentsLength) {
     super();
     this._state = MovieDetailsView.convertMovieToState(movie);
-    this.#movieComments = movieComments;
-
     this.#setInnerHandlers();
+    this.#renderComments = renderComments;
+    this.#getCommentsLength = getCommentsLength;
   }
 
   get template() {
-    return createMovieDetailsTemplate(this._state, this.#movieComments);
+    return createMovieDetailsTemplate(this._state);
   }
 
   reset = (movie) => {
@@ -24,7 +26,7 @@ export default class MovieDetailsView extends AbstractStatefulView {
 
   static convertMovieToState = (movie) => ({
     ...movie,
-    commentEmoji: null,
+    checkedEmoji: null,
     commentText: null,
     scrollTop: null
   });
@@ -32,33 +34,11 @@ export default class MovieDetailsView extends AbstractStatefulView {
   static convertStateToMovie = (state) => {
     const movie = { ...state };
 
-    delete movie.commentEmoji;
+    delete movie.checkedEmoji;
     delete movie.commentText;
     delete movie.scrollTop;
 
     return movie;
-  };
-
-  #commentEmojiListHandler = (evt) => {
-    const emojiInputItem = evt.target.closest('.film-details__emoji-item');
-    if (emojiInputItem) {
-      evt.preventDefault();
-      // emojiInputItem.checked = true;
-      this.updateElement({
-        commentEmoji: emojiInputItem.value,
-        scrollTop: this.element.scrollTop
-      });
-    }
-    this.#restorePosition();
-  };
-
-  #commentInputHandler = (evt) => {
-    evt.preventDefault();
-    this._setState({
-      commentText: evt.target.value,
-      scrollTop: this.element.scrollTop
-    });
-    this.#restorePosition();
   };
 
   #restorePosition = () => {
@@ -71,8 +51,8 @@ export default class MovieDetailsView extends AbstractStatefulView {
   };
 
   #setInnerHandlers = () => {
-    this.element.querySelectorAll('.film-details__emoji-item').forEach((element) => element.addEventListener('change', this.#commentEmojiListHandler));
-    this.element.querySelector('.film-details__comment-input').addEventListener('input', this.#commentInputHandler);
+    this.setEmojiChangeHandler(this._callback.emojiChange);
+    this.setCommentInputHandler(this._callback.textInput);
   };
 
   #setOuterHandlers = () => {
@@ -80,6 +60,19 @@ export default class MovieDetailsView extends AbstractStatefulView {
     this.setWatchlistClickHandler(this._callback.watchlistClick);
     this.setAlreadyWatchedClickHandler(this._callback.alreadyWatchedClick);
     this.setFavoriteClickHandler(this._callback.favoriteClick);
+    this.setCommentAddHandler(this._callback.commentAdd);
+  };
+
+  setEmojiChangeHandler = (callback) => {
+    this._callback.emojiChange = callback;
+    this.element.querySelectorAll('.film-details__emoji-item').forEach((emoji) => {
+      emoji.addEventListener('change', this.#emojiChangeHandler);
+    });
+  };
+
+  setCommentInputHandler = (callback) => {
+    this._callback.textInput = callback;
+    this.element.querySelector('.film-details__comment-input').addEventListener('input', this.#commentInputHandler);
   };
 
   setCloseDetailsClickHandler = (callback) => {
@@ -102,6 +95,33 @@ export default class MovieDetailsView extends AbstractStatefulView {
     this.element.querySelector('.film-details__control-button--favorite').addEventListener('click', this.#favoriteClickHandler);
   };
 
+  setCommentAddHandler = (callback) => {
+    this._callback.commentAdd = callback;
+    this.element.querySelector('.film-details__comment-input').addEventListener('keydown', this.#commentAddHandler);
+  };
+
+  #emojiChangeHandler = (evt) => {
+    evt.preventDefault();
+    const emojiInputItem = evt.target.closest('.film-details__emoji-item');
+    if (emojiInputItem) {
+      this.updateElement({
+        checkedEmoji: emojiInputItem.value,
+        scrollTop: this.element.scrollTop
+      });
+    }
+    this.#renderComments();
+    this.#restorePosition();
+  };
+
+  #commentInputHandler = (evt) => {
+    evt.preventDefault();
+    this._setState({
+      commentText: evt.target.value,
+      scrollTop: this.element.scrollTop
+    });
+    this.#restorePosition();
+  };
+
   #closeDetailsClickHandler = (evt) => {
     evt.preventDefault();
     this._callback.closeDetailsClick();
@@ -120,5 +140,17 @@ export default class MovieDetailsView extends AbstractStatefulView {
   #favoriteClickHandler = (evt) => {
     evt.preventDefault();
     this._callback.favoriteClick();
+  };
+
+  #commentAddHandler = (evt) => {
+    if ((evt.ctrlKey || evt.metaKey) && evt.keyCode === 13 && this._state.checkedEmoji) {
+      this._callback.commentAdd({
+        id: this.#getCommentsLength() + 1,
+        author: 'This User',
+        comment: this._state.commentText ? this._state.commentText : '',
+        commentDate: generateDate(),
+        emotion: this._state.checkedEmoji,
+      });
+    }
   };
 }

@@ -42,30 +42,7 @@ export const adaptCommentDate = (data) => {
 
 export const getTimeFromMins = (timeInMinutes) => dayjs.duration(timeInMinutes, 'minutes').format('H[h] m[min]');
 
-export const getCommentsByIds = (allComments, singleMovieComments) => {
-  const resultComments = [];
-  for (const singleMovieComment of singleMovieComments) {
-    resultComments.push(allComments.find((comment) => comment.id === singleMovieComment));
-  }
-
-  return resultComments;
-};
-
 export const isEscapeKey = (evt) => evt.key === 'Escape' || evt.key === 'Esc';
-
-export const updateItem = (items, newItem) => {
-  const index = items.findIndex((item) => item.id === newItem.id);
-
-  if (index === -1) {
-    return items;
-  }
-
-  return [
-    ...items.slice(0, index),
-    newItem,
-    ...items.slice(index + 1),
-  ];
-};
 
 // Функция помещает задачи без даты в конце списка,
 // возвращая нужный вес для колбэка sort

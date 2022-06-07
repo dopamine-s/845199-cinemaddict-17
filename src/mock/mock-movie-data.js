@@ -1,6 +1,6 @@
 import { getRandomInteger, getRandomArrayElement, generateDate } from '../utils/utils.js';
 import { nanoid } from 'nanoid';
-import { MAX_COMMENTS } from '../model/mock-movies-model.js';
+import { MAX_COMMENTS } from '../model/comments-model.js';
 
 const generateMockCommentText = () => {
   const RANDOM_COMMENT_TEXTS = [
