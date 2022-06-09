@@ -48,9 +48,9 @@ export default class FilmsPresenter {
 
     switch (this.#currentSortType) {
       case SORT_TYPE.DATE:
-        return filteredMovies.sort(sortMovieByDate);
+        return [...filteredMovies].sort(sortMovieByDate);
       case SORT_TYPE.RATING:
-        return filteredMovies.sort(sortMovieByRating);
+        return [...filteredMovies].sort(sortMovieByRating);
     }
 
     return filteredMovies;
