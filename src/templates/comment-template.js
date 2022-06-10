@@ -2,6 +2,7 @@ import { adaptCommentDate } from '../utils/utils.js';
 import he from 'he';
 
 export const commentTemplate = (comment) => {
+  console.log('Комментарий, получаемый в шаблон',comment);
   const getAdaptedCommentDate = (date) => {
     if (date) {
       return adaptCommentDate(date);

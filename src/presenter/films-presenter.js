@@ -6,6 +6,7 @@ import ShowMoreButtonView from '../view/show-more-button-view.js';
 import FilmsTopRatedView from '../view/films-top-rated-view.js';
 import FilmsMostCommentedView from '../view/films-most-commented-view.js';
 import NoMoviesView from '../view/no-movies-view.js';
+import LoadingView from '../view/loading-view.js';
 import MoviePresenter from './movie-presenter.js';
 import { sortMovieByDate, sortMovieByRating } from '../utils/utils.js';
 import { MOVIES_PER_STEP, SORT_TYPE, UPDATE_TYPE, USER_ACTION, FILTER_TYPE } from '../consts.js';
@@ -24,9 +25,11 @@ export default class FilmsPresenter {
   #moviePresenters = new Map();
   #currentSortType = SORT_TYPE.DEFAULT;
   #filterType = FILTER_TYPE.ALL;
+  #isLoading = true;
 
   #filmsSectionComponent = new FilmsSectionView();
   #filmsListComponent = new FilmsListView();
+  #loadingComponent = new LoadingView();
   #filmsContainerComponent = new FilmsContainerView();
   #filmsTopRatedComponent = new FilmsTopRatedView();
   #filmsMostCommentedComponent = new FilmsMostCommentedView();
@@ -106,6 +109,11 @@ export default class FilmsPresenter {
         this.#clearFilms({ resetRenderedMoviesCount: true, resetSortType: true });
         this.#renderFilms();
         break;
+      case UPDATE_TYPE.INIT:
+        this.#isLoading = false;
+        remove(this.#loadingComponent);
+        this.#renderFilms();
+        break;
     }
   };
 
@@ -132,6 +140,10 @@ export default class FilmsPresenter {
 
   #renderMovies = (movies) => {
     movies.forEach((movie) => this.#renderMovie(movie));
+  };
+
+  #renderLoadingComponent = () => {
+    render(this.#loadingComponent, this.#filmsListComponent.element);
   };
 
   #renderNoMoviesComponent = () => {
@@ -164,8 +176,9 @@ export default class FilmsPresenter {
     this.#moviePresenters.clear();
 
     remove(this.#sortViewComponent);
-    // remove(this.#filmsSectionComponent);
-    // remove(this.#filmsListComponent);
+    remove(this.#filmsSectionComponent);
+    remove(this.#filmsListComponent);
+    remove(this.#loadingComponent);
     // remove(this.#filmsContainerComponent);
     // remove(this.#filmsTopRatedComponent);
     // remove(this.#filmsMostCommentedComponent);
@@ -201,6 +214,11 @@ export default class FilmsPresenter {
 
     this.#renderFilmsSectionComponent();
     this.#renderFilmsListComponent();
+
+    if (this.#isLoading) {
+      this.#renderLoadingComponent();
+      return;
+    }
 
     if (moviesCount === 0) {
       this.#renderNoMoviesComponent();

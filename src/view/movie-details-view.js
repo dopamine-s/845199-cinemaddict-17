@@ -1,6 +1,6 @@
 import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
 import { createMovieDetailsTemplate } from '../templates/movie-details-template.js';
-import { generateDate } from '../utils/utils.js';
+// import { generateDate } from '../utils/utils.js';
 
 export default class MovieDetailsView extends AbstractStatefulView {
   #renderComments = null;
@@ -148,7 +148,8 @@ export default class MovieDetailsView extends AbstractStatefulView {
         id: this.#getCommentsLength() + 1,
         author: 'This User',
         comment: this._state.commentText ? this._state.commentText : '',
-        commentDate: generateDate(),
+        // commentDate: generateDate(),
+        commentDate: '',
         emotion: this._state.checkedEmoji,
       });
     }

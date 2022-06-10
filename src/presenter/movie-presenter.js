@@ -71,6 +71,7 @@ export default class MoviePresenter {
 
 
   #renderComments = () => {
+    console.log('Список комментариев конкретного фильма, состоящий из их ID', this.#movie.comments);
     this.#movie.comments.forEach(
       (commentId) => this.#renderComment(this.#commentsModel.getComment(commentId))
     );
