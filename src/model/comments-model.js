@@ -21,7 +21,6 @@ export default class CommentsModel extends Observable {
       this.#comments = [];
       throw new Error('Can\'t get comments by movie ID');
     }
-    console.log('Результат getCommentsByMovieId', this.#comments);
     return this.#comments;
   };
 
@@ -30,7 +29,6 @@ export default class CommentsModel extends Observable {
   }
 
   getComment(commentId) {
-    console.log('commentId', commentId);
     return this.#comments.find((singleComment) => singleComment.id === commentId);
   }
 

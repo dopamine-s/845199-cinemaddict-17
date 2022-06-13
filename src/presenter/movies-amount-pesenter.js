@@ -14,7 +14,7 @@ export default class MoviesAmountPresenter extends AbstractView {
     this.#moviesModel = moviesModel;
   }
 
-  init = () => {
+  init() {
     const movies = this.#moviesModel.movies;
     const prevMoviesAmountComponent = this.#moviesAmountComponent;
     this.#moviesModel.addObserver(this.#handleModelEvent);
@@ -28,7 +28,7 @@ export default class MoviesAmountPresenter extends AbstractView {
 
     replace(this.#moviesAmountComponent, prevMoviesAmountComponent);
     remove(prevMoviesAmountComponent);
-  };
+  }
 
   #handleModelEvent = () => {
     this.init();

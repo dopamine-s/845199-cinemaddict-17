@@ -65,7 +65,6 @@ export default class MoviePresenter {
   };
 
   #renderComment(comment) {
-    console.log('коммент, приходящий в рендер коммента', comment);
     const commentPresenter = new CommentPresenter(this.#movieDetailsComponent.element.querySelector('.film-details__comments-list'), this.#changeMovie);
     commentPresenter.init(comment, this.#movie);
   }
@@ -75,7 +74,6 @@ export default class MoviePresenter {
     const movieId = this.#movie.id;
     await this.#commentsModel.getCommentsByMovieId(movieId);
 
-    console.log('Список комментариев конкретного фильма, состоящий из их ID', this.#movie.comments);
     this.#movie.comments.forEach(
       (commentId) => this.#renderComment(this.#commentsModel.getComment(commentId))
     );
