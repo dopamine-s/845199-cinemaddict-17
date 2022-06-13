@@ -6,6 +6,7 @@ export default class CommentView extends AbstractStatefulView {
   constructor(comment) {
     super();
     this.#comment = comment;
+    // console.log('комментарий, приходящий во вью отдельного коммента', this.#comment);
   }
 
   get template() {

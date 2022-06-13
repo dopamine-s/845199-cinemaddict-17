@@ -148,8 +148,8 @@ export default class MovieDetailsView extends AbstractStatefulView {
         id: this.#getCommentsLength() + 1,
         author: 'This User',
         comment: this._state.commentText ? this._state.commentText : '',
-        // commentDate: generateDate(),
-        commentDate: '',
+        // date: generateDate(),
+        date: '',
         emotion: this._state.checkedEmoji,
       });
     }

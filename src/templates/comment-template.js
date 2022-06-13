@@ -2,7 +2,6 @@ import { adaptCommentDate } from '../utils/utils.js';
 import he from 'he';
 
 export const commentTemplate = (comment) => {
-  console.log('Комментарий, получаемый в шаблон',comment);
   const getAdaptedCommentDate = (date) => {
     if (date) {
       return adaptCommentDate(date);
@@ -19,7 +18,7 @@ export const commentTemplate = (comment) => {
               <p class="film-details__comment-text">${he.encode(comment.comment)}</p>
               <p class="film-details__comment-info">
                 <span class="film-details__comment-author">${comment.author}</span>
-                <span class="film-details__comment-day">${getAdaptedCommentDate(comment.commentDate)}</span>
+                <span class="film-details__comment-day">${getAdaptedCommentDate(comment.date)}</span>
                 <button class="film-details__comment-delete">Delete</button>
               </p>
             </div>

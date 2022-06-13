@@ -45,7 +45,7 @@
 //   id,
 //   author: generateMockCommentAuthor(),
 //   comment: generateMockCommentText(),
-//   commentDate: generateDate(-1000, 0),
+//   date: generateDate(-1000, 0),
 //   emotion: generateMockCommentEmotion(),
 // });
 

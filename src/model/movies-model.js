@@ -64,43 +64,50 @@ export default class MoviesModel extends Observable {
     this._notify(UPDATE_TYPE.INIT);
   };
 
-  updateMovie = (updateType, update) => {
+  updateMovie = async (updateType, update) => {
     const index = this.#movies.findIndex((movie) => movie.id === update.id);
 
     if (index === -1) {
       throw new Error('Can\'t update unexisting movie');
     }
 
-    this.#movies = [
-      ...this.#movies.slice(0, index),
-      update,
-      ...this.#movies.slice(index + 1),
-    ];
+    try {
+      const response = await this.#api.updateMovie(update);
+      const updatedMovie = this.#adaptMovieToClient(response);
 
-    this._notify(updateType, update);
-  };
+      this.#movies = [
+        ...this.#movies.slice(0, index),
+        updatedMovie,
+        ...this.#movies.slice(index + 1),
+      ];
 
-  addMovie = (updateType, update) => {
-    this.#movies = [
-      update,
-      ...this.#movies,
-    ];
-
-    this._notify(updateType, update);
-  };
-
-  deleteMovie = (updateType, update) => {
-    const index = this.#movies.findIndex((movie) => movie.id === update.id);
-
-    if (index === -1) {
-      throw new Error('Can\'t delete unexisting movie');
+      this._notify(updateType, updatedMovie);
+    } catch (err) {
+      throw new Error ('Can\'t update movie');
     }
-
-    this.#movies = [
-      ...this.#movies.slice(0, index),
-      ...this.#movies.slice(index + 1),
-    ];
-
-    this._notify(updateType);
   };
+
+  // addMovie = (updateType, update) => {
+  //   this.#movies = [
+  //     update,
+  //     ...this.#movies,
+  //   ];
+
+  //   this._notify(updateType, update);
+  // };
+
+  // deleteMovie = (updateType, update) => {
+  //   const index = this.#movies.findIndex((movie) => movie.id === update.id);
+
+  //   if (index === -1) {
+  //     throw new Error('Can\'t delete unexisting movie');
+  //   }
+
+  //   this.#movies = [
+  //     ...this.#movies.slice(0, index),
+  //     ...this.#movies.slice(index + 1),
+  //   ];
+
+  //   this._notify(updateType);
+  // };
 }
