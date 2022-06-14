@@ -6,7 +6,6 @@ import UserRankPresenter from './presenter/user-rank-presenter.js';
 import MoviesModel from './model/movies-model.js';
 import CommentsModel from './model/comments-model.js';
 import FiltersModel from './model/filters-model.js';
-// import { render } from './framework/render.js';
 import Api from './api.js';
 
 const END_POINT = 'https://17.ecmascript.pages.academy/cinemaddict';
@@ -26,7 +25,6 @@ const filmsPresenter = new FilmsPresenter(siteMainElement, moviesModel, comments
 const filtersPresenter = new FiltersPresenter(siteMainElement, filtersModel, moviesModel);
 const moviesAmountPresenter = new MoviesAmountPresenter(siteFooterElement, moviesModel);
 
-// render(new UserRankView(), siteHeaderElement);
 userRankPresenter.init();
 filtersPresenter.init();
 filmsPresenter.init();

@@ -1,22 +1,18 @@
 import Observable from '../framework/observable.js';
 import { UPDATE_TYPE } from '../consts.js';
-// import { generateMockMovieData } from '../mock/mock-movie-data.js';
 
-// const MOCK_MOVIES_AMMOUNT = 30;
+const TOP_RATED_MOVIES_AMOUNT = 2;
+const MOST_COMMENTED_MOVIES_AMOUNT = 2;
 
 export default class MoviesModel extends Observable {
   #api = null;
-  // #movies = Array.from({ length: MOCK_MOVIES_AMMOUNT }, generateMockMovieData);
   #movies = [];
+  #topRatedMovies = null;
+  #mostCommentedMovies = null;
 
   constructor(api) {
     super();
     this.#api = api;
-
-    this.#api.movies.then((movies) => {
-      console.log('Список фильмов, приходящий с сервера', movies);
-      console.log('Адаптированный для клиента список фильмов с сервера', movies.map(this.#adaptMovieToClient));
-    });
   }
 
   #adaptMovieToClient = (movie) => {
@@ -53,6 +49,26 @@ export default class MoviesModel extends Observable {
     return this.#movies;
   }
 
+  get topRatedMovies() {
+    if (!this.#topRatedMovies) {
+      this.#topRatedMovies = [...this.movies]
+        .sort((a, b) => b.filmInfo.totalRating - a.filmInfo.totalRating)
+        .slice(0, Math.min(this.movies.length, TOP_RATED_MOVIES_AMOUNT));
+    }
+
+    return this.#topRatedMovies;
+  }
+
+  get mostCommentedMovies() {
+    if (!this.#mostCommentedMovies) {
+      this.#mostCommentedMovies = [...this.movies]
+        .sort((a, b) => b.comments.length - a.comments.length)
+        .slice(0, Math.min(this.movies.length, MOST_COMMENTED_MOVIES_AMOUNT));
+    }
+
+    return this.#mostCommentedMovies;
+  }
+
   init = async () => {
     try {
       const movies = await this.#api.movies;
@@ -86,28 +102,4 @@ export default class MoviesModel extends Observable {
       throw new Error ('Can\'t update movie');
     }
   };
-
-  // addMovie = (updateType, update) => {
-  //   this.#movies = [
-  //     update,
-  //     ...this.#movies,
-  //   ];
-
-  //   this._notify(updateType, update);
-  // };
-
-  // deleteMovie = (updateType, update) => {
-  //   const index = this.#movies.findIndex((movie) => movie.id === update.id);
-
-  //   if (index === -1) {
-  //     throw new Error('Can\'t delete unexisting movie');
-  //   }
-
-  //   this.#movies = [
-  //     ...this.#movies.slice(0, index),
-  //     ...this.#movies.slice(index + 1),
-  //   ];
-
-  //   this._notify(updateType);
-  // };
 }

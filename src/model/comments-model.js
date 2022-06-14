@@ -1,12 +1,8 @@
 import Observable from '../framework/observable.js';
-// import { generateMockComments } from '../mock/mock-movie-data.js';
-
-// export const MAX_COMMENTS = 20;
 
 export default class CommentsModel extends Observable {
   #api = null;
   #comments = [];
-  // #comments = generateMockComments(MAX_COMMENTS);
 
   constructor(api) {
     super();

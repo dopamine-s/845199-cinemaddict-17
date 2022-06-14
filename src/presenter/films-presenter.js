@@ -31,6 +31,8 @@ export default class FilmsPresenter {
   #filmsListComponent = new FilmsListView();
   #loadingComponent = new LoadingView();
   #filmsContainerComponent = new FilmsContainerView();
+  #filmsTopRatedContainerComponent = new FilmsContainerView();
+  #filmsMostCommentedContainerComponent = new FilmsContainerView();
   #filmsTopRatedComponent = new FilmsTopRatedView();
   #filmsMostCommentedComponent = new FilmsMostCommentedView();
 
@@ -132,14 +134,22 @@ export default class FilmsPresenter {
   };
 
 
-  #renderMovie = (movie) => {
-    const moviePresenter = new MoviePresenter(this.#filmsContainerComponent.element, this.#handleViewAction, this.#handleModeChange, this.#commentsModel);
+  #renderMovie = (movie, movieContainer) => {
+    const moviePresenter = new MoviePresenter(movieContainer, this.#handleViewAction, this.#handleModeChange, this.#commentsModel);
     moviePresenter.init(movie);
     this.#moviePresenters.set(movie.id, moviePresenter);
   };
 
   #renderMovies = (movies) => {
-    movies.forEach((movie) => this.#renderMovie(movie));
+    movies.forEach((movie) => this.#renderMovie(movie, this.#filmsContainerComponent.element ));
+  };
+
+  #renderTopRatedMovies = () => {
+    this.#moviesModel.topRatedMovies.forEach((movie) => this.#renderMovie(movie, this.#filmsTopRatedContainerComponent.element));
+  };
+
+  #renderMostCommentedMovies = () => {
+    this.#moviesModel.mostCommentedMovies.forEach((movie) => this.#renderMovie(movie, this.#filmsMostCommentedContainerComponent.element));
   };
 
   #renderLoadingComponent = () => {
@@ -165,8 +175,24 @@ export default class FilmsPresenter {
     render(this.#filmsListComponent, this.#filmsSectionComponent.element);
   };
 
+  #renderFilmsTopRatedComponent = () => {
+    render(this.#filmsTopRatedComponent, this.#filmsSectionComponent.element);
+  };
+
+  #renderFilmsMostCommentedComponent = () => {
+    render(this.#filmsMostCommentedComponent, this.#filmsSectionComponent.element);
+  };
+
   #renderFilmsContainerComponent = () => {
     render(this.#filmsContainerComponent, this.#filmsListComponent.element);
+  };
+
+  #renderFilmsTopRatedContainerComponent = () => {
+    render(this.#filmsTopRatedContainerComponent, this.#filmsTopRatedComponent.element);
+  };
+
+  #renderFilmsMostCommentedContainerComponent = () => {
+    render(this.#filmsMostCommentedContainerComponent, this.#filmsMostCommentedComponent.element);
   };
 
   #clearFilms = ({ resetRenderedMoviesCount = false, resetSortType = false } = {}) => {
@@ -179,10 +205,11 @@ export default class FilmsPresenter {
     remove(this.#filmsSectionComponent);
     remove(this.#filmsListComponent);
     remove(this.#loadingComponent);
-    // remove(this.#filmsContainerComponent);
-    // remove(this.#filmsTopRatedComponent);
-    // remove(this.#filmsMostCommentedComponent);
-
+    remove(this.#filmsTopRatedComponent);
+    remove(this.#filmsMostCommentedComponent);
+    remove(this.#filmsContainerComponent);
+    remove(this.#filmsTopRatedContainerComponent);
+    remove(this.#filmsMostCommentedContainerComponent);
     remove(this.#showMoreButtonComponent);
 
     if (this.#noMoviesComponent) {
@@ -198,14 +225,6 @@ export default class FilmsPresenter {
     if (resetSortType) {
       this.#currentSortType = SORT_TYPE.DEFAULT;
     }
-  };
-
-  #renderFilmsTopRatedComponent = () => {
-    render(this.#filmsTopRatedComponent, this.#filmsSectionComponent.element);
-  };
-
-  #renderFilmsMostCommentedComponent = () => {
-    render(this.#filmsMostCommentedComponent, this.#filmsSectionComponent.element);
   };
 
   #renderFilms = () => {
@@ -234,6 +253,10 @@ export default class FilmsPresenter {
     }
 
     this.#renderFilmsTopRatedComponent();
+    this.#renderFilmsTopRatedContainerComponent();
+    this.#renderTopRatedMovies();
     this.#renderFilmsMostCommentedComponent();
+    this.#renderFilmsMostCommentedContainerComponent();
+    this.#renderMostCommentedMovies();
   };
 }
