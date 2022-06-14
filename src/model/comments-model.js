@@ -28,15 +28,25 @@ export default class CommentsModel extends Observable {
     return this.#comments.find((singleComment) => singleComment.id === commentId);
   }
 
-  addComment = async (movieId, update) => {
+  addComment = async (updateType, update, movieId) => {
     try {
       const updatedData = await this.#api.addComment(movieId, update);
       this.#comments = updatedData.comments;
-      return updatedData.movie;
+      this._notify(updateType, update);
     } catch (err) {
       throw new Error('Can\'t add comment');
     }
   };
+
+  // addComment = async (movieId, update) => {
+  //   try {
+  //     const updatedData = await this.#api.addComment(movieId, update);
+  //     this.#comments = updatedData.comments;
+  //     return updatedData.movie;
+  //   } catch (err) {
+  //     throw new Error('Can\'t add comment');
+  //   }
+  // };
 
   deleteComment = async (updateType, update) => {
     const index = this.#comments.findIndex((comment) => comment.id === update.id);
@@ -51,6 +61,7 @@ export default class CommentsModel extends Observable {
         ...this.#comments.slice(0, index),
         ...this.#comments.slice(index + 1),
       ];
+      this._notify(updateType);
     } catch (err) {
       throw new Error('Can\'t detele comment');
     }

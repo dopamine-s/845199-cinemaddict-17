@@ -145,11 +145,11 @@ export default class MovieDetailsView extends AbstractStatefulView {
   #commentAddHandler = (evt) => {
     if ((evt.ctrlKey || evt.metaKey) && evt.keyCode === 13 && this._state.checkedEmoji) {
       this._callback.commentAdd({
-        id: this.#getCommentsLength() + 1,
-        author: 'This User',
+        // id: this.#getCommentsLength() + 1,
+        // author: 'This User',
         comment: this._state.commentText ? this._state.commentText : '',
         // date: generateDate(),
-        date: '',
+        // date: '',
         emotion: this._state.checkedEmoji,
       });
     }
