@@ -3,22 +3,22 @@ import duration from 'dayjs/plugin/duration';
 
 dayjs.extend(duration);
 
-// Функция из интернета по генерации случайного числа из диапазона
-// Источник - https://github.com/you-dont-need/You-Dont-Need-Lodash-Underscore#_random
-export const getRandomInteger = (a = 0, b = 1) => {
-  const lower = Math.ceil(Math.min(a, b));
-  const upper = Math.floor(Math.max(a, b));
+// // Функция из интернета по генерации случайного числа из диапазона
+// // Источник - https://github.com/you-dont-need/You-Dont-Need-Lodash-Underscore#_random
+// export const getRandomInteger = (a = 0, b = 1) => {
+//   const lower = Math.ceil(Math.min(a, b));
+//   const upper = Math.floor(Math.max(a, b));
 
-  return Math.floor(lower + Math.random() * (upper - lower + 1));
-};
+//   return Math.floor(lower + Math.random() * (upper - lower + 1));
+// };
 
-// функция возвращает случайный элемент из заданного массива
-export const getRandomArrayElement = (elements) => elements[getRandomInteger(0, elements.length - 1)];
+// // функция возвращает случайный элемент из заданного массива
+// export const getRandomArrayElement = (elements) => elements[getRandomInteger(0, elements.length - 1)];
 
-export const generateDate = (minDayGap, maxDayGap) => {
-  const daysGap = getRandomInteger(minDayGap, maxDayGap);
-  return dayjs().add(daysGap, 'day').toDate().toISOString();
-};
+// export const generateDate = (minDayGap, maxDayGap) => {
+//   const daysGap = getRandomInteger(minDayGap, maxDayGap);
+//   return dayjs().add(daysGap, 'day').toDate().toISOString();
+// };
 
 export const humanizeDayDate = (data) => dayjs(data).format('D MMMM YYYY');
 export const humanizeYearDate = (data) => dayjs(data).format('YYYY');

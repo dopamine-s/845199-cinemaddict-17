@@ -18,7 +18,7 @@ export const commentTemplate = (comment) => {
               <p class="film-details__comment-text">${he.encode(comment.comment)}</p>
               <p class="film-details__comment-info">
                 <span class="film-details__comment-author">${comment.author}</span>
-                <span class="film-details__comment-day">${getAdaptedCommentDate(comment.commentDate)}</span>
+                <span class="film-details__comment-day">${getAdaptedCommentDate(comment.date)}</span>
                 <button class="film-details__comment-delete">Delete</button>
               </p>
             </div>

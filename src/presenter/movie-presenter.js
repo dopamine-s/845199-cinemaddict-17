@@ -70,7 +70,10 @@ export default class MoviePresenter {
   }
 
 
-  #renderComments = () => {
+  #renderComments = async () => {
+    const movieId = this.#movie.id;
+    await this.#commentsModel.getCommentsByMovieId(movieId);
+
     this.#movie.comments.forEach(
       (commentId) => this.#renderComment(this.#commentsModel.getComment(commentId))
     );
@@ -155,14 +158,31 @@ export default class MoviePresenter {
       { ...this.#movie, userDetails: {...this.#movie.userDetails, favorite: !this.#movie.userDetails.favorite,} });
   };
 
-  #handleCommentAdd = (update) => {
-    this.#commentsModel.addComment(
-      UPDATE_TYPE.PATCH,
-      update
-    );
+  #handleCommentAdd = async (update) => {
+    try {
+      const movieId = this.#movie.id;
+      await this.#commentsModel.addComment(
+        UPDATE_TYPE.PATCH,
+        update,
+        movieId
+      );
 
-    this.#changeMovie(USER_ACTION.UPDATE,
-      UPDATE_TYPE.PATCH,
-      {...this.#movie,  comments: [...this.#movie.comments, update.id]});
+      this.#changeMovie(USER_ACTION.UPDATE,
+        UPDATE_TYPE.PATCH,
+        {...this.#movie,  comments: [...this.#movie.comments, update.id]});
+    } catch (err) {
+      throw new Error('Can\'t add comment');
+    }
   };
+
+  // #handleCommentAdd = (update) => {
+  //   this.#commentsModel.addComment(
+  //     UPDATE_TYPE.PATCH,
+  //     update
+  //   );
+
+  //   this.#changeMovie(USER_ACTION.UPDATE,
+  //     UPDATE_TYPE.PATCH,
+  //     { ...this.#movie, comments: [...this.#movie.comments, update.id] });
+  // };
 }
