@@ -14,7 +14,8 @@ export default class CommentView extends AbstractStatefulView {
 
   setDeleteClickHandler = (callback) => {
     this._callback.deleteClick = callback;
-    this.element.querySelector('.film-details__comment-delete').addEventListener('click', this.#commentDeleteClickHandler);
+    this.element.querySelector('.film-details__comment-delete')
+      .addEventListener('click', this.#commentDeleteClickHandler);
   };
 
   #commentDeleteClickHandler = (evt) => {

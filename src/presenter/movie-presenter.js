@@ -30,7 +30,7 @@ export default class MoviePresenter {
     this.#commentsModel = commentsModel;
   }
 
-  init(movie) {
+  async init (movie) {
     this.#movie = movie;
     const prevMovieCardComponent = this.#movieCardComponent;
     const prevMovieDetailsComponent = this.#movieDetailsComponent;
@@ -56,6 +56,7 @@ export default class MoviePresenter {
 
     remove(prevMovieCardComponent);
     remove(prevMovieDetailsComponent);
+    await this.#getComments();
     this.#renderComments();
   }
 
@@ -74,10 +75,12 @@ export default class MoviePresenter {
   }
 
 
-  #renderComments = async () => {
+  #getComments = async () => {
     const movieId = this.#movie.id;
     await this.#commentsModel.getCommentsByMovieId(movieId);
+  };
 
+  #renderComments = () => {
     this.#movie.comments.forEach(
       (commentId) => this.#renderComment(this.#commentsModel.getComment(commentId))
     );
@@ -129,9 +132,11 @@ export default class MoviePresenter {
     render(this.#movieDetailsComponent, siteFooterElement, RenderPosition.AFTEREND);
   };
 
-  #handleMovieCardClick = () => {
+  #handleMovieCardClick = async () => {
     this.#changeMode();
     this.#addMovieDetails();
+    this.#getComments();
+    await this.#getComments();
     this.#renderComments();
     this.#mode = Mode.DETAILS;
 

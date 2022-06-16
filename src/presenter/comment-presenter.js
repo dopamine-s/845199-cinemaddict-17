@@ -28,18 +28,21 @@ export default class CommentPresenter {
     remove(this.#commentComponent);
   };
 
-  #handleDeleteClick = async (update) => {
+  #handleDeleteClick = async () => {
+    const update = this.#comment;
     try {
-      const updatedData = await this.#commentsModel.deleteComment(
+      await this.#commentsModel.deleteComment(
         UPDATE_TYPE.PATCH,
         update
       );
+
+      this.#movie.comments = this.#movie.comments.filter((comment) => comment.id !== this.#comment.id);
 
       this.#changeMovie(
         USER_ACTION.UPDATE,
         UPDATE_TYPE.PATCH,
         {
-          ...updatedData.movie
+          ...this.#movie
         }
       );
       // const currentCommentIndex = this.#movie.comments.findIndex(

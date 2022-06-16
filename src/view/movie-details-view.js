@@ -102,7 +102,7 @@ export default class MovieDetailsView extends AbstractStatefulView {
     const emojiInputItem = evt.target.closest('.film-details__emoji-item');
     this.updateElement({
       checkedEmoji: emojiInputItem.value,
-      scrollTop: emojiInputItem.scrollTop
+      scrollTop: this.element.scrollTop
     });
 
     this.#renderComments();
@@ -113,9 +113,9 @@ export default class MovieDetailsView extends AbstractStatefulView {
     evt.preventDefault();
     this._setState({
       commentText: evt.target.value,
-      scrollTop: this.element.scrollTop
+      // scrollTop: this.element.scrollTop
     });
-    this.#restorePosition();
+    // this.#restorePosition();
   };
 
   #closeDetailsClickHandler = (evt) => {

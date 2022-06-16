@@ -59,7 +59,7 @@ export default class CommentsModel extends Observable {
     }
 
     try {
-      await this.#api.deleteComment(update);
+      await this.#api.deleteComment(update.id);
       this.#comments = [
         ...this.#comments.slice(0, index),
         ...this.#comments.slice(index + 1),
