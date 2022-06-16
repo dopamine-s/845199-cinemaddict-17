@@ -105,7 +105,7 @@ export default class MoviePresenter {
     this.#movieDetailsComponent.setWatchlistClickHandler(this.#handleWatchlistClick);
     this.#movieDetailsComponent.setAlreadyWatchedClickHandler(this.#handleAlreadyWatchedClick);
     this.#movieDetailsComponent.setFavoriteClickHandler(this.#handleFavoriteClick);
-    this.#movieDetailsComponent.setCommentAddHandler(this.#handleAddComment);
+    this.#movieDetailsComponent.setAddCommentHandler(this.#handleAddComment);
   };
 
   #handleCloseDetailsView = () => {
@@ -174,10 +174,12 @@ export default class MoviePresenter {
         UPDATE_TYPE.PATCH,
         {
           ...updatedData.movie
-        });
+        }
+      );
+
       const lastCommentIndex = this.#movie.comments.length - 1;
-      this.renderComment(
-        this.commentsModel.getComment(this.#movie.comments[lastCommentIndex])
+      this.#renderComment(
+        this.#commentsModel.getComment(this.#movie.comments[lastCommentIndex])
       );
     } catch (err) {
       throw new Error('Can\'t add comment');

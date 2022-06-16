@@ -112,10 +112,10 @@ export default class FilmsPresenter {
         this.#moviesModel.updateMovie(updateType, update);
         break;
       case USER_ACTION.ADD:
-        this.#moviesModel.addMovie(updateType, update);
+        this.#commentsModel.addComment(updateType, update);
         break;
       case USER_ACTION.DELETE:
-        this.#moviesModel.deleteMovie(updateType, update);
+        this.#commentsModel.deleteComment(updateType, update);
         break;
     }
   };

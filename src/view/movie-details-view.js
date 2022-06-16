@@ -57,7 +57,7 @@ export default class MovieDetailsView extends AbstractStatefulView {
     this.setWatchlistClickHandler(this._callback.watchlistClick);
     this.setAlreadyWatchedClickHandler(this._callback.alreadyWatchedClick);
     this.setFavoriteClickHandler(this._callback.favoriteClick);
-    this.setaddCommentHandler(this._callback.addComment);
+    this.setAddCommentHandler(this._callback.addComment);
   };
 
   setEmojiChangeHandler = (callback) => {
@@ -92,7 +92,7 @@ export default class MovieDetailsView extends AbstractStatefulView {
     this.element.querySelector('.film-details__control-button--favorite').addEventListener('click', this.#favoriteClickHandler);
   };
 
-  setCommentAddHandler = (callback) => {
+  setAddCommentHandler = (callback) => {
     this._callback.addComment = callback;
     this.element.querySelector('.film-details__comment-input').addEventListener('keydown', this.#addCommentHandler);
   };
@@ -100,12 +100,11 @@ export default class MovieDetailsView extends AbstractStatefulView {
   #emojiChangeHandler = (evt) => {
     evt.preventDefault();
     const emojiInputItem = evt.target.closest('.film-details__emoji-item');
-    if (emojiInputItem) {
-      this.updateElement({
-        checkedEmoji: emojiInputItem.value,
-        scrollTop: this.element.scrollTop
-      });
-    }
+    this.updateElement({
+      checkedEmoji: emojiInputItem.value,
+      scrollTop: emojiInputItem.scrollTop
+    });
+
     this.#renderComments();
     this.#restorePosition();
   };

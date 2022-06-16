@@ -8,10 +8,12 @@ export default class CommentPresenter {
   #movie = null;
   #comment = null;
   #changeMovie = null;
+  #commentsModel = null;
 
-  constructor(commentsContainer, changeMovie) {
+  constructor(commentsContainer, changeMovie, commentsModel) {
     this.#commentsContainer = commentsContainer;
     this.#changeMovie = changeMovie;
+    this.#commentsModel = commentsModel;
   }
 
   init(comment, movie) {
@@ -26,13 +28,34 @@ export default class CommentPresenter {
     remove(this.#commentComponent);
   };
 
-  #handleDeleteClick = () => {
-    const currentCommentIndex = this.#movie.comments.findIndex(
-      (commentId) => commentId === this.#comment.id
-    );
-    if (currentCommentIndex !== -1) {
-      this.#movie.comments.splice(currentCommentIndex, 1);
+  #handleDeleteClick = async (update) => {
+    try {
+      const updatedData = await this.#commentsModel.deleteComment(
+        UPDATE_TYPE.PATCH,
+        update
+      );
+
+      this.#changeMovie(
+        USER_ACTION.UPDATE,
+        UPDATE_TYPE.PATCH,
+        {
+          ...updatedData.movie
+        }
+      );
+      // const currentCommentIndex = this.#movie.comments.findIndex(
+      //   (commentId) => commentId === this.#comment.id
+      // );
+
+      // if (currentCommentIndex !== -1) {
+      //   this.#movie.comments.splice(currentCommentIndex, 1);
+      // }
+
+      // this.#changeMovie(
+      //   USER_ACTION.UPDATE,
+      //   UPDATE_TYPE.PATCH,
+      //   this.#movie);
+    } catch (err) {
+      throw new Error('Can\'t delete comment');
     }
-    this.#changeMovie(USER_ACTION.UPDATE, UPDATE_TYPE.PATCH, this.#movie);
   };
 }
