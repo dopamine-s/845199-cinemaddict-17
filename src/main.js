@@ -6,7 +6,7 @@ import UserRankPresenter from './presenter/user-rank-presenter.js';
 import MoviesModel from './model/movies-model.js';
 import CommentsModel from './model/comments-model.js';
 import FiltersModel from './model/filters-model.js';
-import Api from './api.js';
+import Api from './services/api';
 
 const END_POINT = 'https://17.ecmascript.pages.academy/cinemaddict';
 const AUTHORIZATION = 'Basic yh234BP971';

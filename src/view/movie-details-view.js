@@ -1,17 +1,14 @@
 import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
 import { createMovieDetailsTemplate } from '../templates/movie-details-template.js';
-// import { generateDate } from '../utils/utils.js';
 
 export default class MovieDetailsView extends AbstractStatefulView {
   #renderComments = null;
-  #getCommentsLength = null;
 
-  constructor(movie, renderComments, getCommentsLength) {
+  constructor(movie, renderComments) {
     super();
     this._state = MovieDetailsView.convertMovieToState(movie);
     this.#setInnerHandlers();
     this.#renderComments = renderComments;
-    this.#getCommentsLength = getCommentsLength;
   }
 
   get template() {
@@ -60,7 +57,7 @@ export default class MovieDetailsView extends AbstractStatefulView {
     this.setWatchlistClickHandler(this._callback.watchlistClick);
     this.setAlreadyWatchedClickHandler(this._callback.alreadyWatchedClick);
     this.setFavoriteClickHandler(this._callback.favoriteClick);
-    this.setCommentAddHandler(this._callback.commentAdd);
+    this.setaddCommentHandler(this._callback.addComment);
   };
 
   setEmojiChangeHandler = (callback) => {
@@ -96,8 +93,8 @@ export default class MovieDetailsView extends AbstractStatefulView {
   };
 
   setCommentAddHandler = (callback) => {
-    this._callback.commentAdd = callback;
-    this.element.querySelector('.film-details__comment-input').addEventListener('keydown', this.#commentAddHandler);
+    this._callback.addComment = callback;
+    this.element.querySelector('.film-details__comment-input').addEventListener('keydown', this.#addCommentHandler);
   };
 
   #emojiChangeHandler = (evt) => {
@@ -142,14 +139,10 @@ export default class MovieDetailsView extends AbstractStatefulView {
     this._callback.favoriteClick();
   };
 
-  #commentAddHandler = (evt) => {
+  #addCommentHandler = (evt) => {
     if ((evt.ctrlKey || evt.metaKey) && evt.keyCode === 13 && this._state.checkedEmoji) {
-      this._callback.commentAdd({
-        // id: this.#getCommentsLength() + 1,
-        // author: 'This User',
+      this._callback.addComment({
         comment: this._state.commentText ? this._state.commentText : '',
-        // date: generateDate(),
-        // date: '',
         emotion: this._state.checkedEmoji,
       });
     }

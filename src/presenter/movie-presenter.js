@@ -36,7 +36,7 @@ export default class MoviePresenter {
     const prevMovieDetailsComponent = this.#movieDetailsComponent;
 
     this.#movieCardComponent = new MovieCardView(movie);
-    this.#movieDetailsComponent = new MovieDetailsView(movie, this.#renderComments, this.#getCommentsLength);
+    this.#movieDetailsComponent = new MovieDetailsView(movie, this.#renderComments);
 
     this.#setMovieCardHandlers();
     this.#setMovieDetailsHandlers();
@@ -65,7 +65,11 @@ export default class MoviePresenter {
   };
 
   #renderComment(comment) {
-    const commentPresenter = new CommentPresenter(this.#movieDetailsComponent.element.querySelector('.film-details__comments-list'), this.#changeMovie);
+    const commentPresenter = new CommentPresenter(
+      this.#movieDetailsComponent.element.querySelector('.film-details__comments-list'),
+      this.#changeMovie,
+      this.#commentsModel
+    );
     commentPresenter.init(comment, this.#movie);
   }
 
@@ -78,8 +82,6 @@ export default class MoviePresenter {
       (commentId) => this.#renderComment(this.#commentsModel.getComment(commentId))
     );
   };
-
-  #getCommentsLength = () => this.#commentsModel.comments.length;
 
   #destroyComments() {
     this.#commentPresenter.forEach((presenter) => presenter.destroy());
@@ -103,7 +105,7 @@ export default class MoviePresenter {
     this.#movieDetailsComponent.setWatchlistClickHandler(this.#handleWatchlistClick);
     this.#movieDetailsComponent.setAlreadyWatchedClickHandler(this.#handleAlreadyWatchedClick);
     this.#movieDetailsComponent.setFavoriteClickHandler(this.#handleFavoriteClick);
-    this.#movieDetailsComponent.setCommentAddHandler(this.#handleCommentAdd);
+    this.#movieDetailsComponent.setCommentAddHandler(this.#handleAddComment);
   };
 
   #handleCloseDetailsView = () => {
@@ -158,31 +160,27 @@ export default class MoviePresenter {
       { ...this.#movie, userDetails: {...this.#movie.userDetails, favorite: !this.#movie.userDetails.favorite,} });
   };
 
-  #handleCommentAdd = async (update) => {
+  #handleAddComment = async (newComment) => {
     try {
       const movieId = this.#movie.id;
-      await this.#commentsModel.addComment(
+      const updatedData = await this.#commentsModel.addComment(
         UPDATE_TYPE.PATCH,
-        update,
+        newComment,
         movieId
       );
 
-      this.#changeMovie(USER_ACTION.UPDATE,
+      this.#changeMovie(
+        USER_ACTION.UPDATE,
         UPDATE_TYPE.PATCH,
-        {...this.#movie,  comments: [...this.#movie.comments, update.id]});
+        {
+          ...updatedData.movie
+        });
+      const lastCommentIndex = this.#movie.comments.length - 1;
+      this.renderComment(
+        this.commentsModel.getComment(this.#movie.comments[lastCommentIndex])
+      );
     } catch (err) {
       throw new Error('Can\'t add comment');
     }
   };
-
-  // #handleCommentAdd = (update) => {
-  //   this.#commentsModel.addComment(
-  //     UPDATE_TYPE.PATCH,
-  //     update
-  //   );
-
-  //   this.#changeMovie(USER_ACTION.UPDATE,
-  //     UPDATE_TYPE.PATCH,
-  //     { ...this.#movie, comments: [...this.#movie.comments, update.id] });
-  // };
 }

@@ -1,4 +1,6 @@
 export const MOVIES_PER_STEP = 5;
+export const TOP_RATED_MOVIES_AMOUNT = 2;
+export const MOST_COMMENTED_MOVIES_AMOUNT = 2;
 
 export const FILTER_TYPE = {
   ALL: 'All',

@@ -1,4 +1,5 @@
 import Observable from '../framework/observable.js';
+import { adaptMovieToClient } from '../services/api-adapter.js';
 
 export default class CommentsModel extends Observable {
   #api = null;
@@ -13,7 +14,7 @@ export default class CommentsModel extends Observable {
     try {
       const comments = await this.#api.getComments(movieId);
       this.#comments = comments;
-    } catch(err) {
+    } catch (err) {
       this.#comments = [];
       throw new Error('Can\'t get comments by movie ID');
     }
@@ -28,25 +29,19 @@ export default class CommentsModel extends Observable {
     return this.#comments.find((singleComment) => singleComment.id === commentId);
   }
 
-  addComment = async (updateType, update, movieId) => {
+  addComment = async (updateType, comment, movieId) => {
     try {
-      const updatedData = await this.#api.addComment(movieId, update);
+      const updatedData = await this.#api.addComment(movieId, comment);
       this.#comments = updatedData.comments;
-      this._notify(updateType, update);
+      this._notify(updateType, comment);
+      return {
+        comments: this.#comments,
+        movie: adaptMovieToClient(updatedData.movie)
+      };
     } catch (err) {
       throw new Error('Can\'t add comment');
     }
   };
-
-  // addComment = async (movieId, update) => {
-  //   try {
-  //     const updatedData = await this.#api.addComment(movieId, update);
-  //     this.#comments = updatedData.comments;
-  //     return updatedData.movie;
-  //   } catch (err) {
-  //     throw new Error('Can\'t add comment');
-  //   }
-  // };
 
   deleteComment = async (updateType, update) => {
     const index = this.#comments.findIndex((comment) => comment.id === update.id);
