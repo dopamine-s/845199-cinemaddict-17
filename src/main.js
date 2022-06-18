@@ -9,7 +9,7 @@ import FiltersModel from './model/filters-model.js';
 import Api from './services/api';
 
 const END_POINT = 'https://17.ecmascript.pages.academy/cinemaddict';
-const AUTHORIZATION = 'Basic yh234BP971';
+const AUTHORIZATION = 'Basic yh234BP9721';
 
 const siteHeaderElement = document.querySelector('.header');
 const siteMainElement = document.querySelector('.main');

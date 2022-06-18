@@ -180,7 +180,9 @@ export default class MoviePresenter {
         {
           ...updatedData.movie,
           isDelete: false,
-          setViewAction: this.#setSaving
+          setViewAction: this.#setSaving,
+          setAborting: this.#setAborting,
+          state: this.#movieDetailsComponent.state
         }
       );
 
@@ -189,7 +191,7 @@ export default class MoviePresenter {
         this.#commentsModel.getComment(this.#movie.comments[lastCommentIndex])
       );
     } catch (err) {
-      throw new Error('Can\'t add comment');
+      this.#setAborting();
     }
   };
 
@@ -197,5 +199,15 @@ export default class MoviePresenter {
     this.#movieDetailsComponent.updateElement({
       isDisabled: true,
     });
+  };
+
+  #setAborting = () => {
+    const resetState = () => {
+      this.#movieDetailsComponent.updateElement({
+        isDisabled: false,
+      });
+    };
+
+    this.#movieDetailsComponent.shake(resetState);
   };
 }

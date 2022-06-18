@@ -44,11 +44,12 @@ export default class CommentPresenter {
         {
           ...this.#movie,
           isDelete: true,
-          setViewAction: this.#setDeleting
+          setViewAction: this.#setDeleting,
+          setAborting: this.#setAborting,
         }
       );
     } catch (err) {
-      throw new Error('Can\'t delete comment');
+      this.#setAborting();
     }
   };
 
@@ -57,5 +58,17 @@ export default class CommentPresenter {
       isDisabled: true,
       isDeleting: true
     });
+  };
+
+  #setAborting = () => {
+    const resetState = () => {
+      this.#commentComponent.updateElement({
+        isDisabled: false,
+        isDeleting: false,
+      });
+    };
+
+    this.#commentComponent.shake(resetState);
+    this.#commentComponent.setDeleteClickHandler(this.#handleDeleteClick);
   };
 }

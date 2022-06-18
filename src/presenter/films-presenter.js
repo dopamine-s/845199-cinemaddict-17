@@ -12,6 +12,12 @@ import { sortMovieByDate, sortMovieByRating } from '../utils/utils.js';
 import { MOVIES_PER_STEP, TOP_RATED_MOVIES_AMOUNT, MOST_COMMENTED_MOVIES_AMOUNT, SORT_TYPE, UPDATE_TYPE, USER_ACTION, FILTER_TYPE } from '../consts.js';
 import { render, remove, RenderPosition } from '../framework/render.js';
 import { filter } from '../utils/filter.js';
+import UiBlocker from '../framework/ui-blocker/ui-blocker.js';
+
+const TimeLimit = {
+  LOWER_LIMIT: 350,
+  UPPER_LIMIT: 1000,
+};
 
 export default class FilmsPresenter {
   #filmsContainer = null;
@@ -37,6 +43,7 @@ export default class FilmsPresenter {
   #filmsMostCommentedContainerComponent = new FilmsContainerView();
   #filmsTopRatedComponent = new FilmsTopRatedView();
   #filmsMostCommentedComponent = new FilmsMostCommentedView();
+  #uiBlocker = new UiBlocker(TimeLimit.LOWER_LIMIT, TimeLimit.UPPER_LIMIT);
 
   constructor(filmsContainer, moviesModel, commentsModel, filtersModel) {
     this.#filmsContainer = filmsContainer;
@@ -106,20 +113,31 @@ export default class FilmsPresenter {
     }
   };
 
-  #handleViewAction = (actionType, updateType, update) => {
+  #handleViewAction = async (actionType, updateType, update) => {
+    this.#uiBlocker.block();
+
     switch (actionType) {
       case USER_ACTION.UPDATE:
         this.#moviesModel.updateMovie(updateType, update);
         break;
       case USER_ACTION.ADD:
         update.setViewAction();
-        this.#moviesModel.updateMovie(updateType, update);
+        try {
+          await this.#moviesModel.updateMovie(updateType, update);
+        } catch (err) {
+          update.setAborting();
+        }
         break;
       case USER_ACTION.DELETE:
         update.setViewAction();
-        this.#moviesModel.updateMovie(updateType, update);
+        try {
+          await this.#moviesModel.updateMovie(updateType, update);
+        } catch (err) {
+          update.setAborting();
+        }
         break;
     }
+    this.#uiBlocker.unblock();
   };
 
   #handleModelEvent = (updateType, movie) => {
