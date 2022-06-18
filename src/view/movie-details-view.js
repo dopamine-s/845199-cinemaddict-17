@@ -25,7 +25,8 @@ export default class MovieDetailsView extends AbstractStatefulView {
     ...movie,
     checkedEmoji: null,
     commentText: null,
-    scrollTop: null
+    scrollTop: null,
+    isDisabled: false
   });
 
   static convertStateToMovie = (state) => {
@@ -34,6 +35,7 @@ export default class MovieDetailsView extends AbstractStatefulView {
     delete movie.checkedEmoji;
     delete movie.commentText;
     delete movie.scrollTop;
+    delete movie.isDisabled;
 
     return movie;
   };

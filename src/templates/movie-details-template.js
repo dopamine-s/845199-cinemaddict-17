@@ -26,14 +26,15 @@ export const createMovieDetailsTemplate = (movie) => {
       alreadyWatched,
       favorite,
     },
-    checkedEmoji
+    checkedEmoji,
+    isDisabled
   } = movie;
 
   const getEmojisHtml = () => {
     const EmojisHtml = [];
     EMOJIS.forEach((item) => {
       EmojisHtml.push(
-        `<input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-${item}" value="${item}" ${checkedEmoji === item ? 'checked' : ''}>
+        `<input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-${item}" value="${item}" ${isDisabled ? 'disabled' : ''} ${checkedEmoji === item ? 'checked' : ''}>
           <label class="film-details__emoji-label" for="emoji-${item}">
             <img src="./images/emoji/${item}.png" width="30" height="30" alt="emoji">
           </label>`
@@ -134,7 +135,7 @@ export const createMovieDetailsTemplate = (movie) => {
             <div class="film-details__add-emoji-label">${checkedEmoji ? `<img src="./images/emoji/${checkedEmoji}.png" width="70" height="70" alt="${checkedEmoji}">` : ''}</div>
 
             <label class="film-details__comment-label">
-              <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment">${movie.commentText ? movie.commentText : ''}</textarea>
+              <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment" ${isDisabled ? 'disabled' : ''}>${movie.commentText ? movie.commentText : ''}</textarea>
             </label>
 
             <div class="film-details__emoji-list">

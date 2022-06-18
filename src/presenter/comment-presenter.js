@@ -39,26 +39,23 @@ export default class CommentPresenter {
       this.#movie.comments = this.#movie.comments.filter((comment) => comment.id !== this.#comment.id);
 
       this.#changeMovie(
-        USER_ACTION.UPDATE,
+        USER_ACTION.DELETE,
         UPDATE_TYPE.PATCH,
         {
-          ...this.#movie
+          ...this.#movie,
+          isDelete: true,
+          setViewAction: this.#setDeleting
         }
       );
-      // const currentCommentIndex = this.#movie.comments.findIndex(
-      //   (commentId) => commentId === this.#comment.id
-      // );
-
-      // if (currentCommentIndex !== -1) {
-      //   this.#movie.comments.splice(currentCommentIndex, 1);
-      // }
-
-      // this.#changeMovie(
-      //   USER_ACTION.UPDATE,
-      //   UPDATE_TYPE.PATCH,
-      //   this.#movie);
     } catch (err) {
       throw new Error('Can\'t delete comment');
     }
+  };
+
+  #setDeleting = () => {
+    this.#commentComponent.updateElement({
+      isDisabled: true,
+      isDeleting: true
+    });
   };
 }

@@ -175,10 +175,12 @@ export default class MoviePresenter {
       );
 
       this.#changeMovie(
-        USER_ACTION.UPDATE,
+        USER_ACTION.ADD,
         UPDATE_TYPE.PATCH,
         {
-          ...updatedData.movie
+          ...updatedData.movie,
+          isDelete: false,
+          setViewAction: this.#setSaving
         }
       );
 
@@ -189,5 +191,11 @@ export default class MoviePresenter {
     } catch (err) {
       throw new Error('Can\'t add comment');
     }
+  };
+
+  #setSaving = () => {
+    this.#movieDetailsComponent.updateElement({
+      isDisabled: true,
+    });
   };
 }

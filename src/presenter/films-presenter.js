@@ -112,10 +112,12 @@ export default class FilmsPresenter {
         this.#moviesModel.updateMovie(updateType, update);
         break;
       case USER_ACTION.ADD:
-        this.#commentsModel.addComment(updateType, update);
+        update.setViewAction();
+        this.#moviesModel.updateMovie(updateType, update);
         break;
       case USER_ACTION.DELETE:
-        this.#commentsModel.deleteComment(updateType, update);
+        update.setViewAction();
+        this.#moviesModel.updateMovie(updateType, update);
         break;
     }
   };
@@ -285,7 +287,5 @@ export default class FilmsPresenter {
     if (moviesCount > this.#renderedMoviesCount) {
       this.#renderShowMoreButton();
     }
-
-
   };
 }

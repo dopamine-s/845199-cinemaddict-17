@@ -3,13 +3,25 @@ import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
 
 export default class CommentView extends AbstractStatefulView {
   #comment = null;
-  constructor(comment) {
+  _state;
+  #callback;
+
+  constructor(comment, callback) {
     super();
     this.#comment = comment;
+    this.#callback = callback;
+    this._state = {
+      isDisabled: false,
+      isDeleting: false
+    };
   }
 
+  _restoreHandlers = () => {
+    this.setDeleteClickHandler(this.#callback);
+  };
+
   get template() {
-    return commentTemplate(this.#comment);
+    return commentTemplate(this.#comment, this._state);
   }
 
   setDeleteClickHandler = (callback) => {
