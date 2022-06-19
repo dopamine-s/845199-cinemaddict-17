@@ -26,7 +26,7 @@ export default class MovieDetailsView extends AbstractStatefulView {
     checkedEmoji: null,
     commentText: null,
     scrollTop: null,
-    isDisabled: false
+    isDisabled: false,
   });
 
   static convertStateToMovie = (state) => {
@@ -115,9 +115,9 @@ export default class MovieDetailsView extends AbstractStatefulView {
     evt.preventDefault();
     this._setState({
       commentText: evt.target.value,
-      // scrollTop: this.element.scrollTop
+      scrollTop: this.element.scrollTop
     });
-    // this.#restorePosition();
+    this.#restorePosition();
   };
 
   #closeDetailsClickHandler = (evt) => {
@@ -127,21 +127,37 @@ export default class MovieDetailsView extends AbstractStatefulView {
 
   #watchlistClickHandler = (evt) => {
     evt.preventDefault();
+    this.updateElement({
+      scrollTop: this.element.scrollTop,
+      isDisabled: true,
+    });
     this._callback.watchlistClick();
   };
 
   #alreadyWatchedClickHandler = (evt) => {
     evt.preventDefault();
+    this.updateElement({
+      scrollTop: this.element.scrollTop,
+      isDisabled: true,
+    });
     this._callback.alreadyWatchedClick();
   };
 
   #favoriteClickHandler = (evt) => {
     evt.preventDefault();
+    this.updateElement({
+      scrollTop: this.element.scrollTop,
+      isDisabled: true,
+    });
     this._callback.favoriteClick();
   };
 
   #addCommentHandler = (evt) => {
     if ((evt.ctrlKey || evt.metaKey) && evt.keyCode === 13 && this._state.checkedEmoji) {
+      this.updateElement({
+        scrollTop: this.element.scrollTop,
+        isCommentAdding: true,
+      });
       this._callback.addComment({
         comment: this._state.commentText ? this._state.commentText : '',
         emotion: this._state.checkedEmoji,

@@ -1,4 +1,3 @@
-// import UserRankView from './view/user-rank-view.js';
 import FilmsPresenter from './presenter/films-presenter.js';
 import FiltersPresenter from './presenter/filters-presenter.js';
 import MoviesAmountPresenter from './presenter/movies-amount-pesenter.js';
@@ -6,10 +5,7 @@ import UserRankPresenter from './presenter/user-rank-presenter.js';
 import MoviesModel from './model/movies-model.js';
 import CommentsModel from './model/comments-model.js';
 import FiltersModel from './model/filters-model.js';
-import Api from './services/api';
-
-const END_POINT = 'https://17.ecmascript.pages.academy/cinemaddict';
-const AUTHORIZATION = 'Basic yh234BP9721';
+import {Api, END_POINT, AUTHORIZATION} from './services/api';
 
 const siteHeaderElement = document.querySelector('.header');
 const siteMainElement = document.querySelector('.main');

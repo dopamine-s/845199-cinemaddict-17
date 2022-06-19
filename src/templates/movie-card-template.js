@@ -1,6 +1,6 @@
 import { humanizeYearDate, getTimeFromMins } from '../utils/utils.js';
 
-export const createMovieCardTemplate = (movie) => {
+export const createMovieCardTemplate = (state) => {
   const MAX_DESCRIPTION_LENGTH = 140;
   const {
     comments,
@@ -17,8 +17,9 @@ export const createMovieCardTemplate = (movie) => {
       watchlist,
       alreadyWatched,
       favorite,
-    }
-  } = movie;
+    },
+    isDisabled
+  } = state;
 
   const isWatchlistActive = watchlist ? 'film-card__controls-item--active' : '';
   const isAlreadyWatchedActive = alreadyWatched ? 'film-card__controls-item--active' : '';
@@ -58,9 +59,9 @@ export const createMovieCardTemplate = (movie) => {
           <span class="film-card__comments">${comments.length} comments</span>
         </a>
         <div class="film-card__controls">
-          <button class="film-card__controls-item film-card__controls-item--add-to-watchlist ${isWatchlistActive}" type="button">Add to watchlist</button>
-          <button class="film-card__controls-item film-card__controls-item--mark-as-watched ${isAlreadyWatchedActive}" type="button">Mark as watched</button>
-          <button class="film-card__controls-item film-card__controls-item--favorite ${isFavoriteActive}" type="button">Mark as favorite</button>
+          <button class="film-card__controls-item film-card__controls-item--add-to-watchlist ${isWatchlistActive}" type="button"${isDisabled ? ' disabled' : ''}>Add to watchlist</button>
+          <button class="film-card__controls-item film-card__controls-item--mark-as-watched ${isAlreadyWatchedActive}" type="button"${isDisabled ? ' disabled' : ''}>Mark as watched</button>
+          <button class="film-card__controls-item film-card__controls-item--favorite ${isFavoriteActive}" type="button"${isDisabled ? ' disabled' : ''}>Mark as favorite</button>
         </div>
     </article>`
   );

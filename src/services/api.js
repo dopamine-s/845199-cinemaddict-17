@@ -1,5 +1,8 @@
 import ApiService from '../framework/api-service.js';
 
+export const END_POINT = 'https://17.ecmascript.pages.academy/cinemaddict';
+export const AUTHORIZATION = 'Basic yh234BP9721';
+
 const Method = {
   GET: 'GET',
   POST: 'POST',
@@ -7,7 +10,7 @@ const Method = {
   DELETE: 'DELETE'
 };
 
-export default class Api extends ApiService {
+export class Api extends ApiService {
   get movies() {
     return this._load({ url: 'movies' })
       .then(ApiService.parseResponse);

@@ -144,25 +144,48 @@ export default class MoviePresenter {
     document.addEventListener('keydown', this.#handleEscapeKeyDown);
   };
 
-  #handleWatchlistClick = () => {
-    this.#changeMovie(
-      USER_ACTION.UPDATE,
-      UPDATE_TYPE.PATCH,
-      { ...this.#movie, userDetails: { ...this.#movie.userDetails, watchlist: !this.#movie.userDetails.watchlist, } });
+  #handleWatchlistClick = async () => {
+    try {
+      await this.#changeMovie(
+        USER_ACTION.UPDATE,
+        UPDATE_TYPE.PATCH,
+        { ...this.#movie, userDetails:
+        {
+          ...this.#movie.userDetails, watchlist: !this.#movie.userDetails.watchlist,
+        }
+        });
+    } catch {
+      this.#setAborting();
+    }
   };
 
-  #handleAlreadyWatchedClick = () => {
-    this.#changeMovie(
-      USER_ACTION.UPDATE,
-      UPDATE_TYPE.PATCH,
-      { ...this.#movie, userDetails: { ...this.#movie.userDetails, alreadyWatched: !this.#movie.userDetails.alreadyWatched, } });
+  #handleAlreadyWatchedClick = async () => {
+    try {
+      await this.#changeMovie(
+        USER_ACTION.UPDATE,
+        UPDATE_TYPE.PATCH,
+        { ...this.#movie, userDetails:
+        {
+          ...this.#movie.userDetails, alreadyWatched: !this.#movie.userDetails.alreadyWatched,
+        }
+        });
+    } catch {
+      this.#setAborting();
+    }
   };
 
-  #handleFavoriteClick = () => {
-    this.#changeMovie(
-      USER_ACTION.UPDATE,
-      UPDATE_TYPE.PATCH,
-      { ...this.#movie, userDetails: {...this.#movie.userDetails, favorite: !this.#movie.userDetails.favorite,} });
+  #handleFavoriteClick = async () => {
+    try {
+      await this.#changeMovie(
+        USER_ACTION.UPDATE,
+        UPDATE_TYPE.PATCH,
+        { ...this.#movie, userDetails:
+        {...this.#movie.userDetails, favorite: !this.#movie.userDetails.favorite,
+        }
+        });
+    } catch {
+      this.#setAborting();
+    }
   };
 
   #handleAddComment = async (newComment) => {
@@ -179,7 +202,6 @@ export default class MoviePresenter {
         UPDATE_TYPE.PATCH,
         {
           ...updatedData.movie,
-          isDelete: false,
           setViewAction: this.#setSaving,
           setAborting: this.#setAborting,
           state: this.#movieDetailsComponent.state
@@ -202,12 +224,22 @@ export default class MoviePresenter {
   };
 
   #setAborting = () => {
-    const resetState = () => {
-      this.#movieDetailsComponent.updateElement({
-        isDisabled: false,
+    if (this.#mode === Mode.DETAILS) {
+      const resetState = () => {
+        this.#movieDetailsComponent.updateElement({
+          isDisabled: false,
+        });
+      };
+
+      this.#movieDetailsComponent.shake(resetState);
+      return true;
+    }
+
+    const resetMovie = () => {
+      this.#movieCardComponent.updateElement({
+        isDisabled: false
       });
     };
-
-    this.#movieDetailsComponent.shake(resetState);
+    this.#movieCardComponent.shake(resetMovie);
   };
 }

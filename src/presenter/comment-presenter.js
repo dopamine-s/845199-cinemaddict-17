@@ -43,7 +43,6 @@ export default class CommentPresenter {
         UPDATE_TYPE.PATCH,
         {
           ...this.#movie,
-          isDelete: true,
           setViewAction: this.#setDeleting,
           setAborting: this.#setAborting,
         }

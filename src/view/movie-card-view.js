@@ -1,17 +1,44 @@
-import AbstractView from '../framework/view/abstract-view.js';
+import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
 import { createMovieCardTemplate } from '../templates/movie-card-template.js';
 
-export default class MovieCardView extends AbstractView{
-  #movie = null;
+export default class MovieCardView extends AbstractStatefulView{
+  // #movie = null;
 
   constructor(movie) {
     super();
-    this.#movie = movie;
+    // this.#movie = movie;
+    this._state = MovieCardView.convertMovieToState(movie);
   }
 
   get template() {
-    return createMovieCardTemplate(this.#movie);
+    return createMovieCardTemplate(this._state);
   }
+
+  reset = (movie) => {
+    this.updateElement(
+      MovieCardView.convertMovieToState(movie),
+    );
+  };
+
+  static convertMovieToState = (movie) => ({
+    ...movie,
+    isDisabled: false,
+  });
+
+  static convertStateToMovie = (state) => {
+    const movie = { ...state };
+
+    delete movie.isDisabled;
+
+    return movie;
+  };
+
+  _restoreHandlers = () => {
+    this.setDetailsClickHandler(this._callback.click);
+    this.setWatchlistClickHandler(this._callback.watchlistClick);
+    this.setAlreadyWatchedClickHandler(this._callback.alreadyWatchedClick);
+    this.setFavoriteClickHandler(this._callback.favoriteClick);
+  };
 
   setDetailsClickHandler = (callback) => {
     this._callback.click = callback;
@@ -42,16 +69,25 @@ export default class MovieCardView extends AbstractView{
 
   #watchlistClickHandler = (evt) => {
     evt.preventDefault();
+    this.updateElement({
+      isDisabled: true,
+    });
     this._callback.watchlistClick();
   };
 
   #alreadyWatchedClickHandler = (evt) => {
     evt.preventDefault();
+    this.updateElement({
+      isDisabled: true,
+    });
     this._callback.alreadyWatchedClick();
   };
 
   #favoriteClickHandler = (evt) => {
     evt.preventDefault();
+    this.updateElement({
+      isDisabled: true,
+    });
     this._callback.favoriteClick();
   };
 }
