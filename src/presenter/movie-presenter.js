@@ -149,10 +149,10 @@ export default class MoviePresenter {
       await this.#changeMovie(
         USER_ACTION.UPDATE,
         UPDATE_TYPE.PATCH,
-        { ...this.#movie, userDetails:
         {
-          ...this.#movie.userDetails, watchlist: !this.#movie.userDetails.watchlist,
-        }
+          ...this.#movie, userDetails: {
+            ...this.#movie.userDetails, watchlist: !this.#movie.userDetails.watchlist,
+          }
         });
     } catch {
       this.#setAborting();
@@ -164,10 +164,10 @@ export default class MoviePresenter {
       await this.#changeMovie(
         USER_ACTION.UPDATE,
         UPDATE_TYPE.PATCH,
-        { ...this.#movie, userDetails:
         {
-          ...this.#movie.userDetails, alreadyWatched: !this.#movie.userDetails.alreadyWatched,
-        }
+          ...this.#movie, userDetails: {
+            ...this.#movie.userDetails, alreadyWatched: !this.#movie.userDetails.alreadyWatched,
+          }
         });
     } catch {
       this.#setAborting();

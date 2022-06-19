@@ -132,6 +132,7 @@ export default class MovieDetailsView extends AbstractStatefulView {
       isDisabled: true,
     });
     this._callback.watchlistClick();
+    this.#restorePosition();
   };
 
   #alreadyWatchedClickHandler = (evt) => {
@@ -141,6 +142,7 @@ export default class MovieDetailsView extends AbstractStatefulView {
       isDisabled: true,
     });
     this._callback.alreadyWatchedClick();
+    this.#restorePosition();
   };
 
   #favoriteClickHandler = (evt) => {
@@ -149,7 +151,9 @@ export default class MovieDetailsView extends AbstractStatefulView {
       scrollTop: this.element.scrollTop,
       isDisabled: true,
     });
+
     this._callback.favoriteClick();
+    this.#restorePosition();
   };
 
   #addCommentHandler = (evt) => {
@@ -162,6 +166,7 @@ export default class MovieDetailsView extends AbstractStatefulView {
         comment: this._state.commentText ? this._state.commentText : '',
         emotion: this._state.checkedEmoji,
       });
+      this.#restorePosition();
     }
   };
 }
