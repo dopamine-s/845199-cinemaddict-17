@@ -45,7 +45,7 @@ export const createMovieCardTemplate = (state) => {
   };
 
   return (
-    `<article class="film-card">
+    `<article class="film-card" id=${state.id}>
         <a class="film-card__link">
           <h3 class="film-card__title">${title}</h3>
           <p class="film-card__rating"><br>${totalRating}</p>

@@ -1,18 +1,15 @@
 import { adaptCommentDate } from '../utils/utils.js';
 import he from 'he';
 
-export const commentTemplate = (comment, state) => {
+export const commentTemplate = (comment, isDeletingComment) => {
   const getAdaptedCommentDate = (date) => {
     if (date) {
       return adaptCommentDate(date);
     }
-
     return '';
   };
-  const isDisabled = state.isDisabled ? 'disabled' : '';
-  const isDeleting = state.isDeleting ? 'deleting...' : 'Delete';
 
-  return `<li class="film-details__comment">
+  return `<li class="film-details__comment" id="${comment.id}">
             <span class="film-details__comment-emoji">
               <img src="./images/emoji/${comment.emotion}.png" width="55" height="55" alt="emoji-${comment.emotion}">
             </span>
@@ -21,7 +18,7 @@ export const commentTemplate = (comment, state) => {
               <p class="film-details__comment-info">
                 <span class="film-details__comment-author">${comment.author}</span>
                 <span class="film-details__comment-day">${getAdaptedCommentDate(comment.date)}</span>
-                <button class="film-details__comment-delete"${isDisabled}>${isDeleting}</button>
+                <button class="film-details__comment-delete"${isDeletingComment ? ' disabled' : ''}>Delete</button>
               </p>
             </div>
           </li>`;

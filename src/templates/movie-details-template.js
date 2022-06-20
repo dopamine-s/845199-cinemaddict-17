@@ -1,7 +1,8 @@
 import { humanizeDayDate, getTimeFromMins } from '../utils/utils.js';
 import { EMOJIS } from '../consts';
+import CommentView from '../view/comment-view.js';
 
-export const createMovieDetailsTemplate = (movie) => {
+export const createMovieDetailsTemplate = (state, movieComments) => {
   const {
     comments,
     filmInfo: {
@@ -27,8 +28,14 @@ export const createMovieDetailsTemplate = (movie) => {
       favorite,
     },
     checkedEmoji,
-    isDisabled
-  } = movie;
+    commentText,
+    isDisabled,
+    isDeletingComment,
+    isAddingComment
+
+  } = state;
+
+  const commentsTemplate = movieComments.map((comment) => new CommentView(comment, isDeletingComment).template).join('');
 
   const getEmojisHtml = () => {
     const EmojisHtml = [];
@@ -119,9 +126,9 @@ export const createMovieDetailsTemplate = (movie) => {
         </div>
 
         <section class="film-details__controls">
-          <button type="button" class="film-details__control-button film-details__control-button--watchlist ${isWatchlistActive}" id="watchlist" name="watchlist">Add to watchlist</button>
-          <button type="button" class="film-details__control-button film-details__control-button--watched ${isAlreadyWatchedActive}" id="watched" name="watched">Already watched</button>
-          <button type="button" class="film-details__control-button film-details__control-button--favorite ${isFavoriteActive}" id="favorite" name="favorite">Add to favorites</button>
+          <button type="button" class="film-details__control-button film-details__control-button--watchlist ${isWatchlistActive}" id="watchlist" name="watchlist"${isDisabled ? ' disabled' : ''}>Add to watchlist</button>
+          <button type="button" class="film-details__control-button film-details__control-button--watched ${isAlreadyWatchedActive}" id="watched" name="watched"${isDisabled ? ' disabled' : ''}>Already watched</button>
+          <button type="button" class="film-details__control-button film-details__control-button--favorite ${isFavoriteActive}" id="favorite" name="favorite"${isDisabled ? ' disabled' : ''}>Add to favorites</button>
         </section>
       </div>
 
@@ -129,13 +136,15 @@ export const createMovieDetailsTemplate = (movie) => {
         <section class="film-details__comments-wrap">
           <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">${comments.length}</span></h3>
 
-          <ul class="film-details__comments-list"></ul>
+          <ul class="film-details__comments-list">
+          ${commentsTemplate}
+          </ul>
 
           <div class="film-details__new-comment">
             <div class="film-details__add-emoji-label">${checkedEmoji ? `<img src="./images/emoji/${checkedEmoji}.png" width="70" height="70" alt="${checkedEmoji}">` : ''}</div>
 
             <label class="film-details__comment-label">
-              <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment" ${isDisabled ? 'disabled' : ''}>${movie.commentText ? movie.commentText : ''}</textarea>
+              <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment" ${isAddingComment ? 'disabled' : ''}>${commentText ? commentText : ''}</textarea>
             </label>
 
             <div class="film-details__emoji-list">

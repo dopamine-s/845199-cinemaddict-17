@@ -1,7 +1,7 @@
 import ApiService from '../framework/api-service.js';
 
 export const END_POINT = 'https://17.ecmascript.pages.academy/cinemaddict';
-export const AUTHORIZATION = 'Basic yh234BP97221';
+export const AUTHORIZATION = 'Basic yh234BP9721';
 
 const Method = {
   GET: 'GET',

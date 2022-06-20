@@ -1,5 +1,4 @@
 import Observable from '../framework/observable.js';
-import { adaptMovieToClient } from '../services/api-adapter.js';
 
 export default class CommentsModel extends Observable {
   #api = null;
@@ -25,41 +24,18 @@ export default class CommentsModel extends Observable {
     return this.#comments;
   }
 
-  getComment(commentId) {
-    return this.#comments.find((singleComment) => singleComment.id === commentId);
+  set comments(comments) {
+    this.#comments = comments;
   }
 
-  addComment = async (updateType, comment, movieId) => {
-    try {
-      const updatedData = await this.#api.addComment(movieId, comment);
-      this.#comments = updatedData.comments;
-      this._notify(updateType, comment);
-
-      return {
-        comments: this.#comments,
-        movie: adaptMovieToClient(updatedData.movie)
-      };
-    } catch (err) {
-      throw new Error('Can\'t add comment');
-    }
+  addComment = async (movieId, update) => {
+    const updatedData = await this.#api.addComment(movieId, update);
+    this.#comments = updatedData.comments;
+    return updatedData.movie;
   };
 
-  deleteComment = async (updateType, update) => {
-    const index = this.#comments.findIndex((comment) => comment.id === update.id);
-
-    if (index === -1) {
-      throw new Error('Can\'t delete unexisting comment');
-    }
-
-    try {
-      await this.#api.deleteComment(update.id);
-      this.#comments = [
-        ...this.#comments.slice(0, index),
-        ...this.#comments.slice(index + 1),
-      ];
-      this._notify(updateType);
-    } catch (err) {
-      throw new Error('Can\'t delete comment');
-    }
+  deleteComment = async (updateType, id) => {
+    await this.#api.deleteComment(id);
+    this.#comments = this.#comments.filter((comment) => comment.id !== id);
   };
 }

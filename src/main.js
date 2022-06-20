@@ -5,7 +5,7 @@ import UserRankPresenter from './presenter/user-rank-presenter.js';
 import MoviesModel from './model/movies-model.js';
 import CommentsModel from './model/comments-model.js';
 import FiltersModel from './model/filters-model.js';
-import {Api, END_POINT, AUTHORIZATION} from './services/api';
+import {Api, END_POINT, AUTHORIZATION} from './services/api.js';
 
 const siteHeaderElement = document.querySelector('.header');
 const siteMainElement = document.querySelector('.main');
@@ -14,9 +14,9 @@ const siteFooterElement = document.querySelector('.footer');
 const api = new Api(END_POINT, AUTHORIZATION);
 const moviesModel = new MoviesModel(api);
 const commentsModel = new CommentsModel(api);
+const filtersModel = new FiltersModel();
 
 const userRankPresenter = new UserRankPresenter(siteHeaderElement, moviesModel);
-const filtersModel = new FiltersModel();
 const filmsPresenter = new FilmsPresenter(siteMainElement, moviesModel, commentsModel, filtersModel);
 const filtersPresenter = new FiltersPresenter(siteMainElement, filtersModel, moviesModel);
 const moviesAmountPresenter = new MoviesAmountPresenter(siteFooterElement, moviesModel);

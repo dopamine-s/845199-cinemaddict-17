@@ -48,29 +48,40 @@ export default class MoviesModel extends Observable {
     this._notify(UPDATE_TYPE.INIT);
   };
 
-  updateMovie = async (updateType, updatedMovie) => {
-    const index = this.#movies.findIndex((movie) => movie.id === updatedMovie.id);
-    let modifiedMovie = updatedMovie;
+  updateMovie = async (updateType, update) => {
+    const index = this.#findIfMovieExist(update);
+    const response = await this.#api.updateMovie(update);
+    const updatedMovie = adaptMovieToClient(response);
+    this.#setLocalMovie(index, updateType, updatedMovie);
+  };
 
+  updateLocalMovie = async (updateType, update) => {
+    const index = this.#findIfMovieExist(update);
+    this.#setLocalMovie(index, updateType, update);
+  };
+
+  #findIfMovieExist = (update) => {
+    const index = this.#movies.findIndex((movie) => movie.id === update.id);
     if (index === -1) {
-      throw new Error('Can\'t update unexisting movie');
+      throw new Error('Can\'t update non-existing movie');
+    }
+    return index;
+  };
+
+  #setLocalMovie = (index, updateType, update) => {
+    if (update.user_details) {
+      update = adaptMovieToClient(update);
     }
 
-    try {
-      if (updateType === UPDATE_TYPE.PATCH) {
-        const response = await this.#api.updateMovie(updatedMovie);
-        modifiedMovie = adaptMovieToClient(response);
-      }
+    this.#movies = [
+      ...this.#movies.slice(0, index),
+      update,
+      ...this.#movies.slice(index + 1),
+    ];
 
-      this.#movies = [
-        ...this.#movies.slice(0, index),
-        modifiedMovie,
-        ...this.#movies.slice(index + 1),
-      ];
+    this.#mostCommentedMovies = null;
+    this.#topRatedMovies = null;
 
-      this._notify(updateType, modifiedMovie);
-    } catch (err) {
-      throw new Error ('Can\'t update movie');
-    }
+    this._notify(updateType, update);
   };
 }

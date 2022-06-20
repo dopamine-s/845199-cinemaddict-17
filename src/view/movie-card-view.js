@@ -2,36 +2,20 @@ import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
 import { createMovieCardTemplate } from '../templates/movie-card-template.js';
 
 export default class MovieCardView extends AbstractStatefulView{
-  // #movie = null;
 
   constructor(movie) {
     super();
-    // this.#movie = movie;
-    this._state = MovieCardView.convertMovieToState(movie);
+    this._state = this.#convertMovieToState(movie);
   }
 
   get template() {
     return createMovieCardTemplate(this._state);
   }
 
-  reset = (movie) => {
-    this.updateElement(
-      MovieCardView.convertMovieToState(movie),
-    );
-  };
-
-  static convertMovieToState = (movie) => ({
+  #convertMovieToState = (movie) => ({
     ...movie,
     isDisabled: false,
   });
-
-  static convertStateToMovie = (state) => {
-    const movie = { ...state };
-
-    delete movie.isDisabled;
-
-    return movie;
-  };
 
   _restoreHandlers = () => {
     this.setDetailsClickHandler(this._callback.click);
@@ -61,10 +45,9 @@ export default class MovieCardView extends AbstractStatefulView{
   };
 
   #detailsClickHandler = (evt) => {
-    if (evt.target.closest('.film-card__link')) {
-      evt.preventDefault();
-      this._callback.click();
-    }
+    evt.preventDefault();
+    document.body.classList.add('hide-overflow');
+    this._callback.click();
   };
 
   #watchlistClickHandler = (evt) => {
