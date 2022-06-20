@@ -3,7 +3,6 @@ import MovieDetailsView from '../view/movie-details-view.js';
 import { isEscapeKey } from '../utils/utils.js';
 import { USER_ACTION, UPDATE_TYPE } from '../consts.js';
 import { render, remove, replace, RenderPosition } from '../framework/render.js';
-import CommentPresenter from './comment-presenter.js';
 
 const siteFooterElement = document.querySelector('.footer');
 const Mode = {
@@ -12,16 +11,18 @@ const Mode = {
 };
 
 export default class MoviePresenter {
+  #comments = [];
   #movieContainer = null;
   #changeMovie = null;
   #changeMode = null;
   #commentsModel = null;
   #movieCardComponent = null;
   #movieDetailsComponent = null;
-  #movie = null;
   #mode = Mode.DEFAULT;
-
-  #commentPresenter = new Map();
+  #scrollTopMovieDetails = null;
+  #updatedMovie = null;
+  #prevMovieCardComponent = null;
+  #prevMovieDetailsComponent = null;
 
   constructor(movieContainer, changeMovie, changeMode, commentsModel) {
     this.#movieContainer = movieContainer;
@@ -30,33 +31,31 @@ export default class MoviePresenter {
     this.#commentsModel = commentsModel;
   }
 
-  init(movie) {
-    this.#movie = movie;
-    const prevMovieCardComponent = this.#movieCardComponent;
-    const prevMovieDetailsComponent = this.#movieDetailsComponent;
+  init (movie) {
+    this.movie = movie;
+    this.#comments = this.#commentsModel.comments;
+    this.#prevMovieCardComponent = this.#movieCardComponent;
+    this.#prevMovieDetailsComponent = this.#movieDetailsComponent;
 
-    this.#movieCardComponent = new MovieCardView(movie);
-    this.#movieDetailsComponent = new MovieDetailsView(movie, this.#renderComments, this.#getCommentsLength);
+    this.#movieCardComponent = new MovieCardView(this.movie);
+    this.#movieDetailsComponent = new MovieDetailsView(this.movie, []);
 
     this.#setMovieCardHandlers();
     this.#setMovieDetailsHandlers();
 
-    if (prevMovieCardComponent === null || prevMovieDetailsComponent === null) {
+    if (this.#prevMovieCardComponent === null && this.#prevMovieDetailsComponent === null) {
       render(this.#movieCardComponent, this.#movieContainer);
       return;
     }
 
-    if (this.#movieContainer.contains(prevMovieCardComponent.element)) {
-      replace(this.#movieCardComponent, prevMovieCardComponent);
+    if (!this.isModeDetails()) {
+      replace(this.#movieCardComponent, this.#prevMovieCardComponent);
+      remove(this.#prevMovieCardComponent);
     }
 
-    if (document.contains(prevMovieDetailsComponent.element)) {
-      replace(this.#movieDetailsComponent, prevMovieDetailsComponent);
+    if (this.isModeDetails()) {
+      this.#replaceMovieDetailsComponent(this.#comments);
     }
-
-    remove(prevMovieCardComponent);
-    remove(prevMovieDetailsComponent);
-    this.#renderComments();
   }
 
   destroy = () => {
@@ -64,32 +63,17 @@ export default class MoviePresenter {
     remove(this.#movieDetailsComponent);
   };
 
-  #renderComment(comment) {
-    const commentPresenter = new CommentPresenter(this.#movieDetailsComponent.element.querySelector('.film-details__comments-list'), this.#changeMovie);
-    commentPresenter.init(comment, this.#movie);
-  }
-
-
-  #renderComments = async () => {
-    const movieId = this.#movie.id;
-    await this.#commentsModel.getCommentsByMovieId(movieId);
-
-    this.#movie.comments.forEach(
-      (commentId) => this.#renderComment(this.#commentsModel.getComment(commentId))
-    );
+  movieCardDestroy = () => {
+    remove(this.#movieCardComponent);
   };
-
-  #getCommentsLength = () => this.#commentsModel.comments.length;
-
-  #destroyComments() {
-    this.#commentPresenter.forEach((presenter) => presenter.destroy());
-  }
 
   resetView = () => {
     if (this.#mode === Mode.DETAILS) {
       this.#handleCloseDetailsView();
     }
   };
+
+  isModeDetails = () => this.#mode === Mode.DETAILS;
 
   #setMovieCardHandlers = () => {
     this.#movieCardComponent.setDetailsClickHandler(this.#handleMovieCardClick);
@@ -103,22 +87,37 @@ export default class MoviePresenter {
     this.#movieDetailsComponent.setWatchlistClickHandler(this.#handleWatchlistClick);
     this.#movieDetailsComponent.setAlreadyWatchedClickHandler(this.#handleAlreadyWatchedClick);
     this.#movieDetailsComponent.setFavoriteClickHandler(this.#handleFavoriteClick);
-    this.#movieDetailsComponent.setCommentAddHandler(this.#handleCommentAdd);
+    this.#movieDetailsComponent.setDeleteCommentHandler(this.#handleDeleteComment);
+    this.#movieDetailsComponent.setAddCommentHandler(this.#handleAddComment);
+  };
+
+  #handleMovieCardClick = () => {
+    if (this.#mode === Mode.DEFAULT) {
+      this.#addMovieDetails();
+      document.addEventListener('keydown', this.#handleEscapeKeyDown);
+      this.#changeMode();
+      this.#mode = Mode.DETAILS;
+      this.#getComments();
+    }
+  };
+
+  #getComments = async () => {
+    const comments = await this.#commentsModel.getCommentsByMovieId(this.movie.id);
+    this.#prevMovieDetailsComponent = this.#movieDetailsComponent;
+    this.#replaceMovieDetailsComponent(comments);
   };
 
   #handleCloseDetailsView = () => {
-    this.#destroyComments();
-    remove(this.#movieDetailsComponent);
-    this.#movieDetailsComponent.reset(this.#movie);
-
-    document.body.classList.remove('hide-overflow');
-    document.removeEventListener('keydown', this.#handleEscapeKeyDown);
     this.#mode = Mode.DEFAULT;
+    this.#movieDetailsComponent.reset(this.movie);
+    this.#movieDetailsComponent.element.remove();
+    document.removeEventListener('keydown', this.#handleEscapeKeyDown);
   };
 
   #handleEscapeKeyDown = (evt) => {
     if (isEscapeKey(evt)) {
       evt.preventDefault();
+      document.body.classList.remove('hide-overflow');
       this.#handleCloseDetailsView();
     }
   };
@@ -127,62 +126,112 @@ export default class MoviePresenter {
     render(this.#movieDetailsComponent, siteFooterElement, RenderPosition.AFTEREND);
   };
 
-  #handleMovieCardClick = () => {
-    this.#changeMode();
-    this.#addMovieDetails();
-    this.#renderComments();
-    this.#mode = Mode.DETAILS;
-
-    document.body.classList.add('hide-overflow');
-    document.addEventListener('keydown', this.#handleEscapeKeyDown);
-  };
-
-  #handleWatchlistClick = () => {
-    this.#changeMovie(
-      USER_ACTION.UPDATE,
-      UPDATE_TYPE.PATCH,
-      { ...this.#movie, userDetails: { ...this.#movie.userDetails, watchlist: !this.#movie.userDetails.watchlist, } });
-  };
-
-  #handleAlreadyWatchedClick = () => {
-    this.#changeMovie(
-      USER_ACTION.UPDATE,
-      UPDATE_TYPE.PATCH,
-      { ...this.#movie, userDetails: { ...this.#movie.userDetails, alreadyWatched: !this.#movie.userDetails.alreadyWatched, } });
-  };
-
-  #handleFavoriteClick = () => {
-    this.#changeMovie(
-      USER_ACTION.UPDATE,
-      UPDATE_TYPE.PATCH,
-      { ...this.#movie, userDetails: {...this.#movie.userDetails, favorite: !this.#movie.userDetails.favorite,} });
-  };
-
-  #handleCommentAdd = async (update) => {
+  #handleWatchlistClick = async () => {
     try {
-      const movieId = this.#movie.id;
-      await this.#commentsModel.addComment(
-        UPDATE_TYPE.PATCH,
-        update,
-        movieId
-      );
-
-      this.#changeMovie(USER_ACTION.UPDATE,
-        UPDATE_TYPE.PATCH,
-        {...this.#movie,  comments: [...this.#movie.comments, update.id]});
-    } catch (err) {
-      throw new Error('Can\'t add comment');
+      await this.#changeMovie(
+        USER_ACTION.UPDATE,
+        UPDATE_TYPE.MINOR,
+        {
+          ...this.movie, userDetails: {
+            ...this.movie.userDetails, watchlist: !this.movie.userDetails.watchlist,
+          }
+        });
+    } catch {
+      this.#setAborting();
     }
   };
 
-  // #handleCommentAdd = (update) => {
-  //   this.#commentsModel.addComment(
-  //     UPDATE_TYPE.PATCH,
-  //     update
-  //   );
+  #handleAlreadyWatchedClick = async () => {
+    try {
+      await this.#changeMovie(
+        USER_ACTION.UPDATE,
+        UPDATE_TYPE.MINOR,
+        {
+          ...this.movie, userDetails: {
+            ...this.movie.userDetails, alreadyWatched: !this.movie.userDetails.alreadyWatched,
+          }
+        });
+    } catch {
+      this.#setAborting();
+    }
+  };
 
-  //   this.#changeMovie(USER_ACTION.UPDATE,
-  //     UPDATE_TYPE.PATCH,
-  //     { ...this.#movie, comments: [...this.#movie.comments, update.id] });
-  // };
+  #handleFavoriteClick = async () => {
+    try {
+      await this.#changeMovie(
+        USER_ACTION.UPDATE,
+        UPDATE_TYPE.MINOR,
+        { ...this.movie, userDetails:
+        {...this.movie.userDetails, favorite: !this.movie.userDetails.favorite,
+        }
+        });
+    } catch {
+      this.#setAborting();
+    }
+  };
+
+  #handleAddComment = async (update) => {
+    try {
+      this.#updatedMovie = await this.#commentsModel.addComment(this.movie.id, update);
+
+      this.#changeMovie(
+        USER_ACTION.ADD,
+        UPDATE_TYPE.MINOR,
+        this.#updatedMovie
+      );
+    } catch (err) {
+      this.#setAborting();
+    }
+  };
+
+  #handleDeleteComment = async (commentId) => {
+    try {
+      await this.#commentsModel.deleteComment(
+        UPDATE_TYPE.MINOR,
+        commentId
+      );
+
+      this.#changeMovie(
+        USER_ACTION.DELETE,
+        UPDATE_TYPE.MINOR,
+        {
+          ...this.movie,
+          comments: this.movie.comments.filter((movieCommentId) => movieCommentId !== commentId),
+        }
+      );
+    } catch {
+      this.#setAborting();
+    }
+  };
+
+  #replaceMovieDetailsComponent = (comments) => {
+    this.#scrollTopMovieDetails = this.#prevMovieDetailsComponent.element.scrollTop;
+    this.#movieDetailsComponent = new MovieDetailsView(this.movie, comments);
+    this.#setMovieDetailsHandlers();
+    replace(this.#movieDetailsComponent, this.#prevMovieDetailsComponent);
+    this.#movieDetailsComponent.element.scrollTop = this.#scrollTopMovieDetails;
+    remove(this.#prevMovieDetailsComponent);
+  };
+
+  #setAborting = () => {
+    if (this.isModeDetails()) {
+      const resetMovieDetails = () => {
+        this.#movieDetailsComponent.updateElement({
+          isDisabled: false,
+          isDeletingComment: false,
+          isAddingComment: false
+        });
+      };
+
+      this.#movieDetailsComponent.shake(resetMovieDetails);
+      return true;
+    }
+
+    const resetMovie = () => {
+      this.#movieCardComponent.updateElement({
+        isDisabled: false
+      });
+    };
+    this.#movieCardComponent.shake(resetMovie);
+  };
 }

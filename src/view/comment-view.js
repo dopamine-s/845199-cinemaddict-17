@@ -1,24 +1,17 @@
 import { commentTemplate } from '../templates/comment-template.js';
-import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
+import AbstractView from '../framework/view/abstract-stateful-view.js';
 
-export default class CommentView extends AbstractStatefulView {
-  #comment = null;
-  constructor(comment) {
+export default class CommentView extends AbstractView {
+  #comment = {};
+  #isDeletingComment = null;
+
+  constructor(comment, isDeletingComment) {
     super();
     this.#comment = comment;
+    this.#isDeletingComment = isDeletingComment;
   }
 
   get template() {
-    return commentTemplate(this.#comment);
+    return commentTemplate(this.#comment, this.#isDeletingComment);
   }
-
-  setDeleteClickHandler = (callback) => {
-    this._callback.deleteClick = callback;
-    this.element.querySelector('.film-details__comment-delete').addEventListener('click', this.#commentDeleteClickHandler);
-  };
-
-  #commentDeleteClickHandler = (evt) => {
-    evt.preventDefault();
-    this._callback.deleteClick();
-  };
 }
