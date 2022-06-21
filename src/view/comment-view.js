@@ -1,5 +1,5 @@
 import { commentTemplate } from '../templates/comment-template.js';
-import AbstractView from '../framework/view/abstract-stateful-view.js';
+import AbstractView from '../framework/view/abstract-view.js';
 
 export default class CommentView extends AbstractView {
   #comment = {};

@@ -1,4 +1,5 @@
 import MovieCardView from '../view/movie-card-view.js';
+import MovieDetailsContainerView from '../view/movie-details-container-view.js';
 import MovieDetailsView from '../view/movie-details-view.js';
 import { isEscapeKey } from '../utils/utils.js';
 import { USER_ACTION, UPDATE_TYPE } from '../consts.js';
@@ -17,6 +18,7 @@ export default class MoviePresenter {
   #changeMode = null;
   #commentsModel = null;
   #movieCardComponent = null;
+  #movieDetailsContainerComponent = null;
   #movieDetailsComponent = null;
   #mode = Mode.DEFAULT;
   #scrollTopMovieDetails = null;
@@ -39,13 +41,13 @@ export default class MoviePresenter {
 
     this.#movieCardComponent = new MovieCardView(this.movie);
     this.#movieDetailsComponent = new MovieDetailsView(this.movie, []);
+    this.#movieDetailsContainerComponent = new MovieDetailsContainerView();
 
     this.#setMovieCardHandlers();
     this.#setMovieDetailsHandlers();
 
     if (this.#prevMovieCardComponent === null && this.#prevMovieDetailsComponent === null) {
-      render(this.#movieCardComponent, this.#movieContainer);
-      return;
+      return  render(this.#movieCardComponent, this.#movieContainer);
     }
 
     if (!this.isModeDetails()) {
@@ -111,6 +113,7 @@ export default class MoviePresenter {
     this.#mode = Mode.DEFAULT;
     this.#movieDetailsComponent.reset(this.movie);
     this.#movieDetailsComponent.element.remove();
+    this.#movieDetailsContainerComponent.element.remove();
     document.removeEventListener('keydown', this.#handleEscapeKeyDown);
   };
 
@@ -123,7 +126,8 @@ export default class MoviePresenter {
   };
 
   #addMovieDetails = () => {
-    render(this.#movieDetailsComponent, siteFooterElement, RenderPosition.AFTEREND);
+    render(this.#movieDetailsContainerComponent, siteFooterElement, RenderPosition.AFTEREND);
+    render(this.#movieDetailsComponent, this.#movieDetailsContainerComponent.element);
   };
 
   #handleWatchlistClick = async () => {
