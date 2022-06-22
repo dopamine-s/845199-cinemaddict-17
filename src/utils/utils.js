@@ -5,18 +5,19 @@ dayjs.extend(duration);
 
 export const humanizeDayDate = (data) => dayjs(data).format('D MMMM YYYY');
 export const humanizeYearDate = (data) => dayjs(data).format('YYYY');
-export const humanizeCommentDate = (data) => dayjs(data).format('YYYY/MM/DD HH:mm');
 export const adaptCommentDate = (data) => {
+  const MIN_DAYS_GAP = 1;
+  const MAX_DAYS_GAP = 30;
   const dayDate = dayjs(data);
   const daysGap = dayjs().diff(dayDate, 'day');
 
-  if (daysGap <= 1) {
+  if (daysGap <= MIN_DAYS_GAP) {
     return 'Today';
   }
-  if (daysGap > 1 && daysGap <= 30) {
+  if (daysGap > MIN_DAYS_GAP && daysGap <= MAX_DAYS_GAP) {
     return `${daysGap} days ago`;
   }
-  if (daysGap > 30) {
+  if (daysGap > MAX_DAYS_GAP) {
     return dayjs(data).format('YYYY/MM/DD HH:MM');
   }
 
@@ -27,8 +28,6 @@ export const getTimeFromMins = (timeInMinutes) => dayjs.duration(timeInMinutes, 
 
 export const isEscapeKey = (evt) => evt.key === 'Escape' || evt.key === 'Esc';
 
-// Функция помещает задачи без даты в конце списка,
-// возвращая нужный вес для колбэка sort
 const getWeightForNullData = (dataA, dataB) => {
   if (dataA === null && dataB === null) {
     return 0;
