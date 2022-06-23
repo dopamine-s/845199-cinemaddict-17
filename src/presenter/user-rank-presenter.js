@@ -1,4 +1,3 @@
-import AbstractView from '../framework/view/abstract-view.js';
 import UserRankView from '../view/user-rank-view.js';
 import { render, replace, remove } from '../framework/render.js';
 
@@ -9,7 +8,7 @@ const userRankNamesList = {
   'Movie Buff': [21, Infinity]
 };
 
-export default class UserRankPresenter extends AbstractView {
+export default class UserRankPresenter {
   #alreadyWatchedMoviesAmount = null;
   #userRankName = null;
   #moviesModel = null;
@@ -17,7 +16,6 @@ export default class UserRankPresenter extends AbstractView {
   #userRankContainer = null;
 
   constructor (userRankContainer, moviesModel) {
-    super();
     this.#userRankContainer = userRankContainer;
     this.#moviesModel = moviesModel;
   }
